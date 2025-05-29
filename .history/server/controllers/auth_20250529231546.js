@@ -500,7 +500,6 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('등록된 이메일이 없습니다.', 404));
   }
 
-  // 비밀번호 재설정 토큰 생성
   const resetToken = user.getResetPasswordToken();
   await user.save();
 
@@ -515,10 +514,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
       message,
     });
 
-    res.status(200).json({
-      success: true,
-      message: '비밀번호 재설정을 위한 이메일이 전송되었습니다.',
-    });
+    res.status(200).json({ success: true, data: '이메일이 전송되었습니다.' });
   } catch (err) {
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
@@ -682,21 +678,5 @@ exports.findUsernameByEmail = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('등록된 이메일이 없습니다.', 404));
   }
 
-  // 사용자에게 아이디를 이메일로 전송
-  const message = `안녕하세요, 요청하신 아이디는 다음과 같습니다: ${user.username}`;
-
-  try {
-    await sendEmail({
-      email: user.email,
-      subject: '아이디 찾기 요청',
-      message,
-    });
-
-    res.status(200).json({
-      success: true,
-      message: '아이디가 이메일로 전송되었습니다.',
-    });
-  } catch (err) {
-    return next(new ErrorResponse('이메일 전송에 실패했습니다.', 500));
-  }
+  res.status(200).json({ success: true, username: user.username });
 });

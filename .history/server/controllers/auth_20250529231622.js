@@ -500,32 +500,14 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('등록된 이메일이 없습니다.', 404));
   }
 
-  // 비밀번호 재설정 토큰 생성
-  const resetToken = user.getResetPasswordToken();
-  await user.save();
+  // 기존 이메일 인증 서비스 사용
+  const verificationCode = await sendVerificationCode(email);
 
-  const resetUrl = `${req.protocol}://${req.get('host')}/password-reset/${resetToken}`;
-
-  const message = `비밀번호를 재설정하려면 다음 링크를 클릭하세요: \n\n ${resetUrl}`;
-
-  try {
-    await sendEmail({
-      email: user.email,
-      subject: '비밀번호 재설정 요청',
-      message,
-    });
-
-    res.status(200).json({
-      success: true,
-      message: '비밀번호 재설정을 위한 이메일이 전송되었습니다.',
-    });
-  } catch (err) {
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
-    await user.save();
-
-    return next(new ErrorResponse('이메일 전송에 실패했습니다.', 500));
-  }
+  res.status(200).json({
+    success: true,
+    message: '비밀번호 재설정을 위한 인증 코드가 이메일로 전송되었습니다.',
+    verificationCode, // 디버깅용, 실제 운영에서는 제거 필요
+  });
 });
 
 // @desc    비밀번호 재설정
@@ -682,21 +664,13 @@ exports.findUsernameByEmail = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('등록된 이메일이 없습니다.', 404));
   }
 
-  // 사용자에게 아이디를 이메일로 전송
-  const message = `안녕하세요, 요청하신 아이디는 다음과 같습니다: ${user.username}`;
+  // 기존 이메일 인증 서비스 사용
+  const verificationCode = await sendVerificationCode(email);
 
-  try {
-    await sendEmail({
-      email: user.email,
-      subject: '아이디 찾기 요청',
-      message,
-    });
-
-    res.status(200).json({
-      success: true,
-      message: '아이디가 이메일로 전송되었습니다.',
-    });
-  } catch (err) {
-    return next(new ErrorResponse('이메일 전송에 실패했습니다.', 500));
-  }
+  res.status(200).json({
+    success: true,
+    message: '아이디 확인을 위한 인증 코드가 이메일로 전송되었습니다.',
+    username: user.username, // 디버깅용, 실제 운영에서는 제거 필요
+    verificationCode, // 디버깅용, 실제 운영에서는 제거 필요
+  });
 });
