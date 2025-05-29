@@ -41,42 +41,6 @@ exports.checkUsername = async (req, res) => {
 };
 
 /**
- * 이메일 중복 확인
- */
-exports.checkEmail = async (req, res) => {
-    try {
-        const { email } = req.query;
-        
-        if (!email) {
-            return res.status(400).json({
-                success: false,
-                message: '이메일을 입력해주세요.'
-            });
-        }
-        
-        const users = await sequelize.query(
-            'SELECT id FROM users WHERE email = ?',
-            {
-                replacements: [email],
-                type: QueryTypes.SELECT
-            }
-        );
-        
-        res.json({
-            success: true,
-            available: users.length === 0,
-            message: users.length > 0 ? '이미 사용 중인 이메일입니다.' : '사용 가능한 이메일입니다.'
-        });
-    } catch (error) {
-        console.error('이메일 중복 확인 오류:', error);
-        res.status(500).json({
-            success: false,
-            message: '이메일 확인 중 오류가 발생했습니다.'
-        });
-    }
-};
-
-/**
  * 인증 코드 생성 함수
  */
 const generateVerificationCode = () => {
@@ -212,65 +176,18 @@ exports.verifyEmailCode = (req, res) => {
 /**
  * OTP 발송 (별도 엔드포인트)
  */
-exports.sendOtp = asyncHandler(async (req, res, next) => {
-    const { email } = req.body;
-    
-    if (!email) {
-        return res.status(400).json({
-            success: false,
-            message: '이메일 주소를 입력해주세요.'
-        });
-    }
+exports.sendOtp = async (req, res) => {
+    console.log('🔍 [DEBUG] sendOtp 함수 호출됨:', req.body);
+    await exports.sendVerificationCode(req, res);
+};
 
-    try {
-        // OTP 생성 (6자리)
-        const otp = Math.floor(100000 + Math.random() * 900000).toString();
-        
-        // 이메일로 OTP 전송
-        await sendEmail({
-            email,
-            subject: '[Money App] 인증번호',
-            message: `인증번호는 ${otp} 입니다. 
-                      이 인증번호는 5분간 유효합니다.`,
-            html: `
-                <div style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;">
-                  <h2 style="color: #00466a; margin-bottom: 20px;">Money App 인증번호</h2>
-                  <p style="font-size: 16px; margin-bottom: 10px;">안녕하세요,</p>
-                  <p style="font-size: 16px; margin-bottom: 20px;">요청하신 인증번호는 다음과 같습니다:</p>
-                  <div style="background: #00466a; margin: 0 auto; width: max-content; padding: 0 10px; color: #fff; border-radius: 4px; font-size: 25px; margin-bottom: 20px;">
-                    ${otp}
-                  </div>
-                  <p style="font-size: 14px; color: #666; margin-bottom: 10px;">이 인증번호는 5분간 유효합니다.</p>
-                  <p style="font-size: 14px; color: #666;">본인이 요청하지 않은 경우 이 메일을 무시하시면 됩니다.</p>
-                </div>
-            `
-        });
-        
-        // 인증번호 저장 (임시 저장소 사용)
-        verificationCodes.set(email, {
-            code: otp,
-            expiresAt: Date.now() + (5 * 60 * 1000) // 5분 후 만료
-        });
-        
-        // 5분 후 자동 삭제
-        setTimeout(() => {
-            verificationCodes.delete(email);
-            console.log(`🔍 [DEBUG] ${email}의 인증번호 만료됨`);
-        }, 5 * 60 * 1000);
-
-        res.status(200).json({
-            success: true,
-            message: '인증번호가 이메일로 발송되었습니다.'
-        });
-    } catch (error) {
-        console.error('인증번호 발송 오류:', error);
-        res.status(500).json({
-            success: false,
-            message: '인증번호 발송에 실패했습니다.',
-            error: process.env.NODE_ENV === 'development' ? error.message : undefined
-        });
-    }
-});
+/**
+ * OTP 확인 (별도 엔드포인트)
+ */
+exports.verifyOtp = (req, res) => {
+    console.log('🔍 [DEBUG] verifyOtp 함수 호출됨:', req.body);
+    exports.verifyEmailCode(req, res);
+};
 
 exports.sendVerificationEmail = async (req, res) => {
     try {
@@ -326,40 +243,7 @@ exports.sendVerificationEmail = async (req, res) => {
 // @desc    사용자 등록
 // @route   POST /api/auth/register
 exports.register = asyncHandler(async (req, res, next) => {
-  // 요청 본문 로깅 추가
-  console.log('회원가입 요청 본문:', JSON.stringify(req.body, null, 2));
-
-  // 요청 형식 정규화 (중첩 객체 및 일반 객체 모두 처리)
-  let userData = req.body;
-  
-  if (req.body && typeof req.body === 'object') {
-    if (req.body.username && typeof req.body.username === 'object') {
-      userData = req.body.username; // 중첩된 경우
-    } else {
-      userData = req.body; // 중첩되지 않은 경우
-    }
-  }
-
-  const { username, email, password, confirmPassword } = userData;
-
-  // 비밀번호 확인
-  if (!confirmPassword) {
-    return next(new ErrorResponse('비밀번호 확인을 입력해주세요.', 400));
-  }
-  
-  if (password !== confirmPassword) {
-    return next(new ErrorResponse('비밀번호가 일치하지 않습니다.', 400));
-  }
-
-  if (!username || !email || !password || !confirmPassword) {
-    return next(new ErrorResponse('사용자명, 이메일, 비밀번호, 비밀번호 확인은 필수 입력 사항입니다.', 400));
-  }
-
-  // 비밀번호 강도 검증
-  const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
-  if (!passwordRegex.test(password)) {
-    return next(new ErrorResponse('비밀번호는 최소 8자 이상이며, 대소문자, 숫자, 특수문자(!@#$%^&*)를 각각 하나 이상 포함해야 합니다.', 400));
-  }
+  const { username, email, password } = req.body;
 
   // 사용자 생성
   const user = await User.create({
@@ -367,15 +251,15 @@ exports.register = asyncHandler(async (req, res, next) => {
     email,
     password
   });
+
   // 프로필 생성
-  const userProfile = await UserProfile.create({
+  await UserProfile.create({
     userId: user.id,
     displayName: username,
     preferences: {
       notifications: false,
       darkMode: false,
-      language: 'ko',
-      theme: 'light'
+      language: 'ko'
     }
   });
 
@@ -393,16 +277,7 @@ exports.login = asyncHandler(async (req, res, next) => {
   }
 
   // 사용자 조회
-  const user = await User.findOne({
-    where: { username },
-    attributes: ['id', 'username', 'email', 'password'], // users 테이블에서 필요한 컬럼만 선택
-    include: [
-      {
-        model: UserProfile, // user_profiles 테이블과 조인
-        attributes: ['displayName'] // 필요한 컬럼만 선택
-      }
-    ]
-  });
+  const user = await User.findOne({ where: { username } });
 
   if (!user) {
     return next(new ErrorResponse('아이디 또는 비밀번호가 일치하지 않습니다.', 401));
@@ -565,9 +440,10 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 const sendTokenResponse = (user, statusCode, res) => {
   const token = user.getSignedJwtToken();
 
-  const cookieExpireDays = parseInt(process.env.JWT_COOKIE_EXPIRE, 10) || 30; // 기본값 30일
   const options = {
-    expires: new Date(Date.now() + cookieExpireDays * 24 * 60 * 60 * 1000),
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+    ),
     httpOnly: true
   };
 
@@ -580,14 +456,7 @@ const sendTokenResponse = (user, statusCode, res) => {
     .cookie('token', token, options)
     .json({
       success: true,
-      token,
-      user: {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        displayName: user.UserProfile?.displayName || user.username,
-        preferences: user.UserProfile?.preferences || {}
-      }
+      token
     });
 };
 
@@ -635,63 +504,18 @@ exports.verifyEmailCode = asyncHandler(async (req, res, next) => {
 // @desc    OTP 발송
 // @route   POST /api/auth/send-otp
 exports.sendOtp = asyncHandler(async (req, res, next) => {
-  const { email } = req.body;
+  const { phone } = req.body;
   
-  if (!email) {
-    return res.status(400).json({
-      success: false,
-      message: '이메일 주소를 입력해주세요.'
-    });
-  }
-
-  try {
-    // OTP 생성 (6자리)
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    
-    // 이메일로 OTP 전송
-    await sendEmail({
-      email,
-      subject: '[Money App] 인증번호',
-      message: `인증번호는 ${otp} 입니다. 
-                이 인증번호는 5분간 유효합니다.`,
-      html: `
-        <div style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;">
-          <h2 style="color: #00466a; margin-bottom: 20px;">Money App 인증번호</h2>
-          <p style="font-size: 16px; margin-bottom: 10px;">안녕하세요,</p>
-          <p style="font-size: 16px; margin-bottom: 20px;">요청하신 인증번호는 다음과 같습니다:</p>
-          <div style="background: #00466a; margin: 0 auto; width: max-content; padding: 0 10px; color: #fff; border-radius: 4px; font-size: 25px; margin-bottom: 20px;">
-            ${otp}
-          </div>
-          <p style="font-size: 14px; color: #666; margin-bottom: 10px;">이 인증번호는 5분간 유효합니다.</p>
-          <p style="font-size: 14px; color: #666;">본인이 요청하지 않은 경우 이 메일을 무시하시면 됩니다.</p>
-        </div>
-      `
-    });
-    
-    // 인증번호 저장 (임시 저장소 사용)
-    verificationCodes.set(email, {
-      code: otp,
-      expiresAt: Date.now() + (5 * 60 * 1000) // 5분 후 만료
-    });
-    
-    // 5분 후 자동 삭제
-    setTimeout(() => {
-      verificationCodes.delete(email);
-      console.log(`🔍 [DEBUG] ${email}의 인증번호 만료됨`);
-    }, 5 * 60 * 1000);
-
-    res.status(200).json({
-      success: true,
-      message: '인증번호가 이메일로 발송되었습니다.'
-    });
-  } catch (error) {
-    console.error('인증번호 발송 오류:', error);
-    res.status(500).json({
-      success: false,
-      message: '인증번호 발송에 실패했습니다.',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
+  // OTP 생성 (6자리)
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  
+  // TODO: SMS 발송 로직 구현
+  
+  res.status(200).json({
+    success: true,
+    message: 'OTP가 발송되었습니다.',
+    otp // 실제 운영 환경에서는 제거
+  });
 });
 
 // @desc    OTP 확인

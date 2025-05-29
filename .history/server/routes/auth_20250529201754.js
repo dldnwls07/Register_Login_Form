@@ -1,5 +1,8 @@
+// server/routes/auth.js
 const express = require('express');
 const router = express.Router();
+const { QueryTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
 const authController = require('../controllers/auth');
 const { protect } = require('../middleware/auth');
 
@@ -9,8 +12,7 @@ router.post('/login', authController.login);
 router.post('/logout', authController.logout);
 router.get('/me', protect, authController.getMe);
 router.get('/verify', protect, authController.verifyToken);
-router.get('/check-username', authController.checkUsername);
-router.get('/check-email', authController.checkEmail);
+router.post('/check-username', authController.checkUsername);
 
 // 비밀번호 관리 라우트
 router.post('/forgot-password', authController.forgotPassword);

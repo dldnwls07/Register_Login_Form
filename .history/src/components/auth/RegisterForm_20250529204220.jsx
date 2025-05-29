@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext'; // 여기 수정!
 import api from '../../utils/apiService';
 import '../../styles/auth/RegisterForm.css';
@@ -20,6 +20,7 @@ const RegisterForm = () => {
     const [verificationStatus, setVerificationStatus] = useState({ verified: false, message: '' });
     
     const { register, sendVerificationEmail, verifyCode } = useAuth(); // 필요한 함수들 가져오기
+    const navigate = useNavigate(); // navigate 훅 추가
 
     useEffect(() => {
         let timer;
@@ -59,15 +60,23 @@ const RegisterForm = () => {
             newErrors.email = '이메일을 입력하세요';
         } else if (!emailRegex.test(formData.email)) {
             newErrors.email = '유효한 이메일을 입력하세요';
-        }
-
-        if (!formData.password) {
+        }        if (!formData.password) {
             newErrors.password = '비밀번호를 입력하세요';
-        } else if (!passwordRegex.test(formData.password)) {
-            newErrors.password = '비밀번호는 최소 8자, 대문자, 소문자, 숫자를 포함해야 합니다';
+        } else if (formData.password.length < 8) {
+            newErrors.password = '비밀번호는 최소 8자 이상이어야 합니다';
+        } else if (!/[A-Z]/.test(formData.password)) {
+            newErrors.password = '비밀번호는 최소 하나의 대문자를 포함해야 합니다';
+        } else if (!/[a-z]/.test(formData.password)) {
+            newErrors.password = '비밀번호는 최소 하나의 소문자를 포함해야 합니다';
+        } else if (!/[0-9]/.test(formData.password)) {
+            newErrors.password = '비밀번호는 최소 하나의 숫자를 포함해야 합니다';
+        } else if (!/[!@#$%^&*]/.test(formData.password)) {
+            newErrors.password = '비밀번호는 최소 하나의 특수문자(!@#$%^&*)를 포함해야 합니다';
         }
 
-        if (formData.password !== formData.confirmPassword) {
+        if (!formData.confirmPassword) {
+            newErrors.confirmPassword = '비밀번호 확인을 입력하세요';
+        } else if (formData.password !== formData.confirmPassword) {
             newErrors.confirmPassword = '비밀번호가 일치하지 않습니다';
         }
 
@@ -231,10 +240,17 @@ const RegisterForm = () => {
         }
         
         setIsSubmitting(true);
-        
         try {
             // 회원가입 요청
-            await register(formData.username, formData.email, formData.password);
+            const response = await api.post('/auth/register', {
+                username: formData.username,
+                email: formData.email,
+                password: formData.password,
+                confirmPassword: formData.confirmPassword,
+                isEmailVerified: true,
+                emailVerificationToken: formData.verificationCode,
+                role: 'user'
+            });
             // 성공 시 로그인 페이지로 이동은 AuthContext에서 처리
         } catch (error) {
             console.error('회원가입 오류:', error);

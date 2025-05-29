@@ -1,27 +1,26 @@
-import axios from './axiosConfig';
+import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 export const checkUsername = async (username) => {
-    const response = await axios.get('/auth/check-username', {
+    const response = await axios.get(`${API_URL}/auth/check-username`, {
         params: { username }
     });
     return response.data;
 };
 
 export const sendVerificationEmail = async (email) => {
-    const response = await axios.post('/auth/send-verification', { email });
+    const response = await axios.post(`${API_URL}/auth/send-verification`, { email });
     return response.data;
 };
 
 export const verifyEmailCode = async (code) => {
-    const response = await axios.post('/auth/verify-code', { code });
+    const response = await axios.post(`${API_URL}/auth/verify-code`, { code });
     return response.data;
 };
 
 export const register = async (userData) => {
-    console.log('authAPI register - Input userData:', JSON.stringify(userData, null, 2));
-
+    // 중첩된 username 객체를 평탄화하여 전송
     const flatData = {
         username: userData.username,
         email: userData.email,
@@ -31,25 +30,14 @@ export const register = async (userData) => {
         emailVerificationToken: userData.emailVerificationToken,
         role: userData.role
     };
-    console.log('authAPI register - flatData to be sent:', JSON.stringify(flatData, null, 2));
 
-    try {
-        const response = await axios.post('/auth/register', flatData);
-        return response.data;
-    } catch (error) {
-        console.error('Error in authAPI.register:', error.response ? error.response.data : error.message);
-        throw error.response ? error.response.data : error;
-    }
+    const response = await axios.post(`${API_URL}/auth/register`, flatData);
+    return response.data;
 };
 
 export const login = async (credentials) => {
-    try {
-        const response = await axios.post('/auth/login', credentials);
-        return response.data;
-    } catch (error) {
-        console.error('Error in authAPI.login:', error.response ? error.response.data : error.message);
-        throw error.response ? error.response.data : error;
-    }
+    const response = await axios.post(`${API_URL}/auth/login`, credentials);
+    return response.data;
 };
 
 export const updateUserProfile = async (userData) => {

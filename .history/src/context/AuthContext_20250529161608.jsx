@@ -77,13 +77,10 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   };
+
   const register = async (userData) => {
     setLoading(true);
     try {
-      // registerUser 호출 전에 데이터 구조 확인
-      if (typeof userData !== 'object' || Array.isArray(userData)) {
-        throw new Error('잘못된 사용자 데이터 형식입니다.');
-      }
       const response = await registerUser(userData);
       return response;
     } catch (error) {

@@ -326,39 +326,15 @@ exports.sendVerificationEmail = async (req, res) => {
 // @desc    사용자 등록
 // @route   POST /api/auth/register
 exports.register = asyncHandler(async (req, res, next) => {
-  // 요청 본문 로깅 추가
-  console.log('회원가입 요청 본문:', JSON.stringify(req.body, null, 2));
+  // username이 객체인 경우 처리
+  const userData = req.body.username && typeof req.body.username === 'object' 
+    ? req.body.username 
+    : req.body;
 
-  // 요청 형식 정규화 (중첩 객체 및 일반 객체 모두 처리)
-  let userData = req.body;
-  
-  if (req.body && typeof req.body === 'object') {
-    if (req.body.username && typeof req.body.username === 'object') {
-      userData = req.body.username; // 중첩된 경우
-    } else {
-      userData = req.body; // 중첩되지 않은 경우
-    }
-  }
+  const { username, email, password } = userData;
 
-  const { username, email, password, confirmPassword } = userData;
-
-  // 비밀번호 확인
-  if (!confirmPassword) {
-    return next(new ErrorResponse('비밀번호 확인을 입력해주세요.', 400));
-  }
-  
-  if (password !== confirmPassword) {
-    return next(new ErrorResponse('비밀번호가 일치하지 않습니다.', 400));
-  }
-
-  if (!username || !email || !password || !confirmPassword) {
-    return next(new ErrorResponse('사용자명, 이메일, 비밀번호, 비밀번호 확인은 필수 입력 사항입니다.', 400));
-  }
-
-  // 비밀번호 강도 검증
-  const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
-  if (!passwordRegex.test(password)) {
-    return next(new ErrorResponse('비밀번호는 최소 8자 이상이며, 대소문자, 숫자, 특수문자(!@#$%^&*)를 각각 하나 이상 포함해야 합니다.', 400));
+  if (!username || !email || !password) {
+    return next(new ErrorResponse('사용자명, 이메일, 비밀번호는 필수 입력 사항입니다.', 400));
   }
 
   // 사용자 생성
@@ -367,15 +343,15 @@ exports.register = asyncHandler(async (req, res, next) => {
     email,
     password
   });
+
   // 프로필 생성
-  const userProfile = await UserProfile.create({
+  await UserProfile.create({
     userId: user.id,
     displayName: username,
     preferences: {
       notifications: false,
       darkMode: false,
-      language: 'ko',
-      theme: 'light'
+      language: 'ko'
     }
   });
 
@@ -393,16 +369,7 @@ exports.login = asyncHandler(async (req, res, next) => {
   }
 
   // 사용자 조회
-  const user = await User.findOne({
-    where: { username },
-    attributes: ['id', 'username', 'email', 'password'], // users 테이블에서 필요한 컬럼만 선택
-    include: [
-      {
-        model: UserProfile, // user_profiles 테이블과 조인
-        attributes: ['displayName'] // 필요한 컬럼만 선택
-      }
-    ]
-  });
+  const user = await User.findOne({ where: { username } });
 
   if (!user) {
     return next(new ErrorResponse('아이디 또는 비밀번호가 일치하지 않습니다.', 401));
@@ -565,9 +532,10 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 const sendTokenResponse = (user, statusCode, res) => {
   const token = user.getSignedJwtToken();
 
-  const cookieExpireDays = parseInt(process.env.JWT_COOKIE_EXPIRE, 10) || 30; // 기본값 30일
   const options = {
-    expires: new Date(Date.now() + cookieExpireDays * 24 * 60 * 60 * 1000),
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+    ),
     httpOnly: true
   };
 
@@ -580,14 +548,7 @@ const sendTokenResponse = (user, statusCode, res) => {
     .cookie('token', token, options)
     .json({
       success: true,
-      token,
-      user: {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        displayName: user.UserProfile?.displayName || user.username,
-        preferences: user.UserProfile?.preferences || {}
-      }
+      token
     });
 };
 

@@ -395,7 +395,6 @@ exports.login = asyncHandler(async (req, res, next) => {
   // 사용자 조회
   const user = await User.findOne({
     where: { username },
-    attributes: ['id', 'username', 'email', 'password'], // users 테이블에서 필요한 컬럼만 선택
     include: [
       {
         model: UserProfile, // user_profiles 테이블과 조인
@@ -580,14 +579,7 @@ const sendTokenResponse = (user, statusCode, res) => {
     .cookie('token', token, options)
     .json({
       success: true,
-      token,
-      user: {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        displayName: user.UserProfile?.displayName || user.username,
-        preferences: user.UserProfile?.preferences || {}
-      }
+      token
     });
 };
 

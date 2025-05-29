@@ -20,8 +20,8 @@ export const verifyEmailCode = async (code) => {
 };
 
 export const register = async (userData) => {
-    console.log('authAPI register - Input userData:', JSON.stringify(userData, null, 2));
-
+    console.log('authAPI register 함수 - 입력 userData:', userData);
+    // 중첩된 username 객체를 평탄화하여 전송
     const flatData = {
         username: userData.username,
         email: userData.email,
@@ -31,25 +31,15 @@ export const register = async (userData) => {
         emailVerificationToken: userData.emailVerificationToken,
         role: userData.role
     };
-    console.log('authAPI register - flatData to be sent:', JSON.stringify(flatData, null, 2));
+    console.log('authAPI register 함수 - 평탄화된 flatData:', flatData);
 
-    try {
-        const response = await axios.post('/auth/register', flatData);
-        return response.data;
-    } catch (error) {
-        console.error('Error in authAPI.register:', error.response ? error.response.data : error.message);
-        throw error.response ? error.response.data : error;
-    }
+    const response = await axios.post('/auth/register', flatData);
+    return response.data;
 };
 
 export const login = async (credentials) => {
-    try {
-        const response = await axios.post('/auth/login', credentials);
-        return response.data;
-    } catch (error) {
-        console.error('Error in authAPI.login:', error.response ? error.response.data : error.message);
-        throw error.response ? error.response.data : error;
-    }
+    const response = await axios.post(`${API_URL}/auth/login`, credentials);
+    return response.data;
 };
 
 export const updateUserProfile = async (userData) => {

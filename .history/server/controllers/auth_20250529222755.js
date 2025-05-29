@@ -580,14 +580,7 @@ const sendTokenResponse = (user, statusCode, res) => {
     .cookie('token', token, options)
     .json({
       success: true,
-      token,
-      user: {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        displayName: user.UserProfile?.displayName || user.username,
-        preferences: user.UserProfile?.preferences || {}
-      }
+      token
     });
 };
 

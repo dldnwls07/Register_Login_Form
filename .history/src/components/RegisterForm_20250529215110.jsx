@@ -150,7 +150,6 @@ const RegisterForm = ({ onRegistrationSuccess }) => {
                 username: formData.username,
                 email: formData.email,
                 password: formData.password,
-                confirmPassword: formData.confirmPassword, // 이 부분을 추가합니다.
                 isEmailVerified: true,
                 emailVerificationToken: formData.verificationCode,
                 role: 'user'

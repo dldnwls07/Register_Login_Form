@@ -393,16 +393,7 @@ exports.login = asyncHandler(async (req, res, next) => {
   }
 
   // 사용자 조회
-  const user = await User.findOne({
-    where: { username },
-    attributes: ['id', 'username', 'email', 'password'], // users 테이블에서 필요한 컬럼만 선택
-    include: [
-      {
-        model: UserProfile, // user_profiles 테이블과 조인
-        attributes: ['displayName'] // 필요한 컬럼만 선택
-      }
-    ]
-  });
+  const user = await User.findOne({ where: { username } });
 
   if (!user) {
     return next(new ErrorResponse('아이디 또는 비밀번호가 일치하지 않습니다.', 401));
@@ -565,9 +556,10 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 const sendTokenResponse = (user, statusCode, res) => {
   const token = user.getSignedJwtToken();
 
-  const cookieExpireDays = parseInt(process.env.JWT_COOKIE_EXPIRE, 10) || 30; // 기본값 30일
   const options = {
-    expires: new Date(Date.now() + cookieExpireDays * 24 * 60 * 60 * 1000),
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+    ),
     httpOnly: true
   };
 
@@ -580,14 +572,7 @@ const sendTokenResponse = (user, statusCode, res) => {
     .cookie('token', token, options)
     .json({
       success: true,
-      token,
-      user: {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        displayName: user.UserProfile?.displayName || user.username,
-        preferences: user.UserProfile?.preferences || {}
-      }
+      token
     });
 };
 
