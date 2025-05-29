@@ -701,19 +701,22 @@ exports.findUsernameByEmail = asyncHandler(async (req, res, next) => {
   }
 });
 
+// 토큰 응답 함수
 const sendTokenResponse = (user, statusCode, res) => {
   // 토큰 생성
   const token = user.getSignedJwtToken();
 
+  // 쿠키 옵션 설정
   const options = {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
     ),
-    httpOnly: true, //쿠키 접근 차단
+    httpOnly: true,
   };
 
+  // HTTPS인 경우에만 secure 옵션 활성화
   if (process.env.NODE_ENV === 'production') {
-    options.secure = true; // https 에서만 쿠키 전송송
+    options.secure = true;
   }
 
   res
