@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 배경 원 -->
+  <circle cx="16" cy="16" r="15" fill="#3F51B5" stroke="#303F9F" stroke-width="2"/>
+  
+  <!-- 사용자 아이콘 -->
+  <path d="M16 10C17.1 10 18 10.9 18 12C18 13.1 17.1 14 16 14C14.9 14 14 13.1 14 12C14 10.9 14.9 10 16 10ZM16 16C18.2 16 20 17.8 20 20V21H12V20C12 17.8 13.8 16 16 16Z" 
+        fill="white"/>
+</svg>
