@@ -14,16 +14,14 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const initializeAuth = async () => {
             const token = localStorage.getItem('token');
-            console.log('🔍 [DEBUG] 저장된 토큰:', token);
             if (token) {
                 try {
                     const response = await api.get('/auth/me', {
                         headers: { Authorization: `Bearer ${token}` }
                     });
-                    console.log('🔍 [DEBUG] 사용자 정보:', response.data);
                     setUser(response.data.user);
                 } catch (error) {
-                    console.error('🔍 [DEBUG] 초기화 중 오류 발생:', error);
+                    console.error('초기화 중 오류 발생:', error);
                     localStorage.removeItem('token');
                 }
             }

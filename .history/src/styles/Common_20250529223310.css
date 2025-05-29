@@ -344,7 +344,7 @@ body {
 }
 
 .dark-mode-toggle.active {
-  background-color: var(--success-color); /* 초록색 */
+  background-color: green;
   color: white;
 }
 

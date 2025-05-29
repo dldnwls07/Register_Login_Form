@@ -30,8 +30,8 @@
 }
 
 .back-link button:hover {
-  background-color: initial;
-  color: initial;
+  color: #303F9F;
+  text-decoration: underline;
 }
 
 .profile-card {
@@ -159,10 +159,6 @@
   display: flex;
   justify-content: flex-end;
   margin-top: 2rem;
-}
-
-.profile-actions button {
-  margin-bottom: 10px; /* 버튼 간격 추가 */
 }
 
 .profile-section {

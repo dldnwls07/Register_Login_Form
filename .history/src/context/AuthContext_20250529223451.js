@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext } from 'react';
 import api from '../utils/apiService';
 
 // 컨텍스트 생성
@@ -9,28 +9,6 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(false);
     const [darkMode, setDarkMode] = useState(false); // 다크 모드 상태 추가
-
-    // 초기화 로직 추가
-    useEffect(() => {
-        const initializeAuth = async () => {
-            const token = localStorage.getItem('token');
-            console.log('🔍 [DEBUG] 저장된 토큰:', token);
-            if (token) {
-                try {
-                    const response = await api.get('/auth/me', {
-                        headers: { Authorization: `Bearer ${token}` }
-                    });
-                    console.log('🔍 [DEBUG] 사용자 정보:', response.data);
-                    setUser(response.data.user);
-                } catch (error) {
-                    console.error('🔍 [DEBUG] 초기화 중 오류 발생:', error);
-                    localStorage.removeItem('token');
-                }
-            }
-        };
-
-        initializeAuth();
-    }, []);
 
     // 로그인 함수
     const login = async (username, password) => {

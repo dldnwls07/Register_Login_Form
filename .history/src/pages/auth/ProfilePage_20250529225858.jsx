@@ -100,7 +100,7 @@ const ProfilePage = () => {
       <h1>내 프로필</h1>
       
       <div className="back-link">
-        <button onClick={() => navigate('/login')}>← 로그인 및 회원가입 화면으로 돌아가기</button>
+        <button onClick={() => navigate('/')}>← 대시보드로 돌아가기</button>
       </div>
       
       <div className="profile-card">
@@ -183,6 +183,15 @@ const ProfilePage = () => {
             )}
           </div>
         </div>
+
+        {!isChangingPassword && (
+          <div className="profile-section">
+            <h3>환경 설정</h3>
+            <div className="settings-grid">
+              {/* Removed dark mode and language settings */}
+            </div>
+          </div>
+        )}
 
         <div className="profile-actions">
           {!isChangingPassword && !isEditing && (

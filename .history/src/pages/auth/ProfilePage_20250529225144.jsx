@@ -8,7 +8,9 @@ const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [editedUser, setEditedUser] = useState({
-    displayName: user?.displayName || user?.username || ''
+    displayName: user?.displayName || user?.username || '',
+    darkMode: user?.preferences?.darkMode || false,
+    language: user?.preferences?.language || 'ko'
   });
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
@@ -17,6 +19,18 @@ const ProfilePage = () => {
   });
   const [passwordError, setPasswordError] = useState('');
   const navigate = useNavigate();
+
+  // 다크모드 효과 적용
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark-mode', editedUser.darkMode);
+  }, [editedUser.darkMode]);
+  // 언어 설정 적용
+  useEffect(() => {
+    if (editedUser.language) {
+      document.documentElement.setAttribute('lang', editedUser.language);
+      localStorage.setItem('preferredLanguage', editedUser.language);
+    }
+  }, [editedUser.language]);
 
   const formatDate = (dateString) => {
     if (!dateString) return '정보 없음';
@@ -28,6 +42,7 @@ const ProfilePage = () => {
   };
 
   const handleLogout = () => {
+    document.documentElement.classList.remove('dark-mode');
     logout();
     navigate('/login');
   };
@@ -86,9 +101,20 @@ const ProfilePage = () => {
 
   const handleCancelEdit = () => {
     setEditedUser({
-      displayName: user?.displayName || user?.username || ''
+      displayName: user?.displayName || user?.username || '',
+      darkMode: user?.preferences?.darkMode || false,
+      language: user?.preferences?.language || 'ko',
     });
     setIsEditing(false);
+  };
+
+  const getLanguageName = (code) => {
+    const languages = {
+      ko: '한국어',
+      en: 'English',
+      ja: '日本語'
+    };
+    return languages[code] || code;
   };
 
   if (!user) {
@@ -100,7 +126,7 @@ const ProfilePage = () => {
       <h1>내 프로필</h1>
       
       <div className="back-link">
-        <button onClick={() => navigate('/login')}>← 로그인 및 회원가입 화면으로 돌아가기</button>
+        <button onClick={() => navigate('/')}>← 대시보드로 돌아가기</button>
       </div>
       
       <div className="profile-card">
@@ -184,6 +210,37 @@ const ProfilePage = () => {
           </div>
         </div>
 
+        {!isChangingPassword && (
+          <div className="profile-section">
+            <h3>환경 설정</h3>
+            <div className="settings-grid">
+              <div className="setting-item">
+                <span>다크 모드</span>
+                <label className="setting-toggle">
+                  <input
+                    type="checkbox"
+                    checked={editedUser.darkMode}
+                    onChange={(e) => setEditedUser({...editedUser, darkMode: e.target.checked})}
+                    disabled={!isEditing}
+                  />
+                  <span className="toggle-slider"></span>
+                </label>
+              </div>
+              <div className="setting-item setting-item-select">
+                <span>언어 설정</span>                <select
+                  value={editedUser.language}
+                  onChange={(e) => setEditedUser({...editedUser, language: e.target.value})}
+                  disabled={!isEditing}
+                >
+                  <option value="ko">한국어</option>
+                  <option value="en">English</option>
+                  <option value="ja">日本語</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="profile-actions">
           {!isChangingPassword && !isEditing && (
             <>
@@ -199,6 +256,52 @@ const ProfilePage = () => {
           )}
         </div>
       </div>
+
+      {/* Add dark mode styles */}
+      <style jsx>{`
+        :root[class*="dark-mode"] .profile-page {
+          background-color: #1a1a1a;
+          color: #ffffff;
+        }
+
+        :root[class*="dark-mode"] .profile-card {
+          background-color: #2d2d2d;
+          border-color: #404040;
+        }
+
+        :root[class*="dark-mode"] input,
+        :root[class*="dark-mode"] select {
+          background-color: #333333;
+          color: #ffffff;
+          border-color: #404040;
+        }
+
+        :root[class*="dark-mode"] button {
+          background-color: #404040;
+          color: #ffffff;
+          border-color: #505050;
+        }
+
+        :root[class*="dark-mode"] button:hover {
+          background-color: #505050;
+        }
+
+        :root[class*="dark-mode"] .error-message {
+          color: #ff6b6b;
+        }
+
+        :root[class*="dark-mode"] .setting-toggle {
+          background-color: #333333;
+        }
+
+        :root[class*="dark-mode"] .toggle-slider {
+          background-color: #505050;
+        }
+
+        :root[class*="dark-mode"] .toggle-slider:before {
+          background-color: #ffffff;
+        }
+      `}</style>
     </div>
   );
 };

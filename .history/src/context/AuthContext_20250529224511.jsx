@@ -21,28 +21,37 @@ export const AuthProvider = ({ children }) => {
   // 초기 인증 상태 확인
   useEffect(() => {
     const initializeAuth = async () => {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        console.log('🔍 [DEBUG] No token found in localStorage.');
-        setLoading(false);
-        return;
-      }
-
       try {
-        const currentUser = await getCurrentUser();
-        setUser(currentUser);
+        const token = localStorage.getItem('token');
+        if (token) {
+          const currentUser = await getCurrentUser();
+          setUser(currentUser);
+
+          // 토큰 갱신 로직 추가
+          const refreshInterval = setInterval(async () => {
+            try {
+              const refreshedToken = await verifyToken(token);
+              localStorage.setItem('token', refreshedToken);
+              console.log('토큰이 갱신되었습니다.');
+            } catch (refreshError) {
+              console.error('토큰 갱신 오류:', refreshError);
+              clearInterval(refreshInterval);
+              logout();
+            }
+          }, 15 * 60 * 1000); // 15분마다 갱신
+
+          return () => clearInterval(refreshInterval);
+        }
       } catch (error) {
-        console.error('🔍 [DEBUG] Token expired or invalid:', error);
+        console.error('인증 초기화 오류:', error);
         localStorage.removeItem('token');
-        alert('세션이 만료되었습니다. 다시 로그인하세요.');
-        window.location.href = '/login?expired';
       } finally {
         setLoading(false);
       }
     };
 
     initializeAuth();
-  }, []);
+  }, [logout]);
 
   // 활동 감지 및 자동 로그아웃 기능
   useEffect(() => {
@@ -117,10 +126,10 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       const response = await updateUserProfile(userData);
-      setUser((prevUser) => ({
+      setUser(prevUser => ({
         ...prevUser,
         ...response.data,
-        preferences: response.data.preferences,
+        preferences: response.data.preferences
       }));
       return response;
     } catch (error) {

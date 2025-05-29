@@ -21,21 +21,15 @@ export const AuthProvider = ({ children }) => {
   // 초기 인증 상태 확인
   useEffect(() => {
     const initializeAuth = async () => {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        console.log('🔍 [DEBUG] No token found in localStorage.');
-        setLoading(false);
-        return;
-      }
-
       try {
-        const currentUser = await getCurrentUser();
-        setUser(currentUser);
+        const token = localStorage.getItem('token');
+        if (token) {
+          const currentUser = await getCurrentUser();
+          setUser(currentUser);
+        }
       } catch (error) {
-        console.error('🔍 [DEBUG] Token expired or invalid:', error);
+        console.error('인증 초기화 오류:', error);
         localStorage.removeItem('token');
-        alert('세션이 만료되었습니다. 다시 로그인하세요.');
-        window.location.href = '/login?expired';
       } finally {
         setLoading(false);
       }
