@@ -1,0 +1,222 @@
+.button-container {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.auth-button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: #00c471;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.2s;
+    margin-top: 8px;
+}
+
+.auth-button.secondary {
+    background: #f5f6f7;
+    color: #333;
+}
+
+.auth-button:hover:not(:disabled) {
+    background: #00b366;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,196,113,0.15);
+}
+
+.auth-button.secondary:hover {
+    background: #e9ecef;
+    box-shadow: none;
+}
+
+.auth-page {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: #f8f9fa;
+}
+
+.auth-wrapper {
+    width: 100%;
+    max-width: 480px;
+    background-color: #fff;
+    border-radius: 24px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.07);
+    padding: 24px;
+    position: relative;
+}
+
+.auth-container {
+    max-width: 400px;
+    width: 100%;
+    margin: 40px auto;
+    padding: 40px 32px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.step-indicator-container {
+    display: flex;
+    flex-direction: row; /* 명시적으로 가로 배열 */
+    justify-content: space-between;
+    align-items: center;
+    width: 70%;
+    margin: 0 auto 40px;
+    position: relative;
+}
+
+/* 연결선을 먼저 그리기 */
+.step-indicator-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #e9ecef;
+    transform: translateY(-50%);
+    z-index: 0;
+}
+
+.step-circle {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    border: 2px solid #e0e0e0;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #9e9e9e;
+    z-index: 2;
+    transition: all 0.3s;
+}
+
+.step-circle.completed {
+    border-color: #00c471;
+    background: #00c471;
+    color: #fff;
+}
+
+/* 체크표시 제거 */
+.step-circle.completed::after {
+    content: none;
+}
+
+/* 완료된 단계들 사이의 연결선 */
+.step-indicator-container::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: 2px;
+    background: #00c471;
+    transform: translateY(-50%);
+    z-index: 0;
+    width: calc((var(--step) - 1) * 33.3%); /* JavaScript로 --step 변수를 설정해야 함 */
+    transition: width 0.3s;
+}
+
+/* 원의 ::after 삭제하고 대신 배경 연결선 사용 */
+.step-circle::after {
+    content: none;
+}
+
+.auth-title {
+    text-align: center;
+    margin-bottom: 36px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #222;
+    letter-spacing: -0.5px;
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid #e1e1e1;
+    border-radius: 12px;
+    font-size: 15px;
+    background-color: #fafafa;
+    transition: all 0.2s ease;
+}
+
+.form-group input:focus {
+    border-color: #00c471;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(0,196,113,0.1);
+    outline: none;
+}
+
+.error-message {
+    color: #ff4d4f;
+    font-size: 13px;
+    margin-top: 6px;
+    text-align: left;
+}
+
+.password-conditions {
+    font-size: 11px;
+    color: #888;
+    margin-top: 4px;
+}
+
+.password-strength {
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.password-strength.위험 {
+    color: #ff4d4f;
+}
+
+.password-strength.경고 {
+    color: #ff9800;
+}
+
+.password-strength.안전 {
+    color: #00c471;
+}
+
+.form-container {
+    position: relative;
+    min-height: 250px;
+}
+
+.form-step {
+    position: absolute;
+    width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(15px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.form-step.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}

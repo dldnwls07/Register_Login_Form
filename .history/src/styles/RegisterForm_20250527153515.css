@@ -1,0 +1,160 @@
+.button-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.auth-button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.auth-button.primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.auth-button.secondary {
+    background-color: #e0e0e0;
+    color: var(--text-color);
+}
+
+.auth-button:hover {
+    opacity: 0.9;
+}
+
+.auth-button:disabled {
+    background-color: #e0e0e0;
+    cursor: not-allowed;
+}
+
+.step-indicator {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.step-circle {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 5px;
+    font-size: 14px;
+    color: #ccc;
+}
+
+.step-circle.completed {
+    border-color: #4caf50;
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.password-conditions {
+    font-size: 12px;
+    color: #888;
+    margin-top: 5px;
+}
+
+.password-strength {
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.password-strength.위험 {
+    color: red;
+}
+
+.password-strength.경고 {
+    color: orange;
+}
+
+.password-strength.안전 {
+    color: green;
+}
+
+.auth-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.2s ease;
+}
+
+.form-group input:focus {
+    border-color: #333;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+}
+
+.step-indicator-container {
+    margin: 0 auto 40px;
+    max-width: 280px;
+}
+
+.progress-bar {
+    height: 4px;
+    margin: 20px 0;
+}
+
+.form-container {
+    min-height: 380px;
+    position: relative;
+}
+
+.form-step {
+    position: absolute;
+    width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.form-step.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.auth-title {
+    text-align: center;
+    margin-bottom: 32px;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.error-message {
+    color: #ff4d4f;
+    font-size: 14px;
+    margin-top: 8px;
+}

@@ -1,0 +1,125 @@
+// server/app.js
+const express = require('express');
+const dotenv = require('dotenv');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const errorHandler = require('./middleware/error');
+const path = require('path');
+
+// 환경 변수 로드
+dotenv.config({ path: path.join(__dirname, 'config', 'config.env') });
+
+// 데이터베이스 연결
+const { connectDB } = require('./config/db');
+connectDB();
+
+// Express 앱 초기화
+const app = express();
+
+// 미들웨어
+app.use(express.json());
+app.use(cookieParser());
+
+// CORS 설정
+const corsOptions = {
+    origin: function(origin, callback) {
+        // 허용할 출처 목록
+        const allowedOrigins = [
+            'http://localhost:3000',
+            'http://localhost:5002',  // 새로운 클라이언트 포트 추가
+            process.env.CLIENT_URL
+        ].filter(Boolean);
+        
+        // 개발 환경에서 origin이 undefined일 수 있음 (같은 출처일 때)
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('CORS 정책에 의해 차단됨'));
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['set-cookie']
+};
+app.use(cors(corsOptions));
+
+// 세션 설정
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'your-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000 // 24시간
+    }
+}));
+
+// 로깅 미들웨어
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} [${req.method}] ${req.path} - 요청 본문:`, 
+    req.method === 'GET' ? req.query : req.body);
+  
+  // 응답 로깅
+  const originalSend = res.send;
+  res.send = function(body) {
+    console.log(`${new Date().toISOString()} [응답] ${req.path} - 상태 코드: ${res.statusCode}`);
+    return originalSend.call(this, body);
+  };
+  
+  next();
+});
+
+// 로깅 미들웨어 - 모든 요청 내용 자세히 기록
+app.use((req, res, next) => {
+  const now = new Date().toISOString();
+  const method = req.method;
+  const url = req.url;
+  const body = method === 'POST' || method === 'PUT' ? req.body : undefined;
+  const query = Object.keys(req.query).length > 0 ? req.query : undefined;
+  
+  console.log(`${now} [${method}] ${url}`);
+  if (body) console.log('요청 본문:', body);
+  if (query) console.log('쿼리 파라미터:', query);
+  
+  // 응답 완료 시 로깅
+  const oldEnd = res.end;
+  res.end = function(...args) {
+    const responseTime = new Date().toISOString();
+    console.log(`${responseTime} [응답] ${url} - 상태: ${res.statusCode}`);
+    oldEnd.apply(res, args);
+  };
+  
+  next();
+});
+
+// 라우트 설정
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/transactions', require('./routes/transactions'));
+
+// 에러 핸들러
+app.use(errorHandler);
+
+// 세부 오류 로깅 미들웨어 추가
+app.use((err, req, res, next) => {
+  console.error('서버 오류:', err.stack);
+  res.status(err.statusCode || 500).json({
+    success: false,
+    message: err.message || '서버 내부 오류가 발생했습니다.',
+    error: process.env.NODE_ENV === 'development' ? err.stack : undefined
+  });
+});
+
+// 프로덕션 환경에서 React 앱 제공
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
+    app.get('*', (req, res) => res.sendFile(path.resolve(__dirname, '..', 'client', 'build', 'index.html')));
+} else {
+    app.get('/', (req, res) => {
+        res.send('API is running...');
+    });
+}
+
+module.exports = app;

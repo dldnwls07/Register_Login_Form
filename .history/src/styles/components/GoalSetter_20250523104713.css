@@ -1,0 +1,269 @@
+/* GoalSetter 컴포넌트 스타일 */
+.goal-setter {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 24px;
+}
+
+.goal-setter h2 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #333;
+  font-weight: 600;
+}
+
+.goal-form {
+  margin-bottom: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.form-group {
+  flex: 1 1 200px;
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+  color: #666;
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border 0.2s;
+}
+
+.form-group input:focus {
+  border-color: #4263eb;
+  outline: none;
+}
+
+.input-with-icon {
+  position: relative;
+}
+
+.input-with-icon input {
+  padding-right: 40px;
+}
+
+.currency-symbol {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+.goal-submit-button {
+  background-color: #4263eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.goal-submit-button:hover {
+  background-color: #3249b1;
+}
+
+.goal-status {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.goal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.goal-header h3 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.achievement-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 토글 스위치 스타일 */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #4263eb;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #4263eb;
+}
+
+input:checked + .slider:before {
+  transform: translateX(24px);
+}
+
+/* 둥근 슬라이더 */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/* 진행바 스타일 */
+.progress-bar-container {
+  height: 10px;
+  background-color: #e9ecef;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #4263eb;
+  border-radius: 5px;
+  transition: width 0.5s ease-in-out;
+}
+
+.progress-bar.exceeded {
+  background-color: #e03131;
+}
+
+.progress-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.progress-percentage {
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.progress-numbers {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  color: #666;
+  font-size: 0.9rem;
+  margin: 8px 0 0;
+}
+
+.goal-status-message {
+  padding: 12px;
+  border-radius: 6px;
+  margin-top: 16px;
+}
+
+.goal-status-message.remaining {
+  background-color: #e6f4ea;
+}
+
+.goal-status-message.exceeded {
+  background-color: #fde7e9;
+}
+
+.goal-status-message .alert {
+  color: #c92a2a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.goal-status-message .success {
+  color: #2b8a3e;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.goal-status-message .icon {
+  font-size: 1.2rem;
+}
+
+.no-goal-message {
+  text-align: center;
+  padding: 24px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  color: #666;
+}
+
+.no-goal-message p:first-child {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 768px) {
+  .goal-form {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .goal-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .achievement-toggle {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}

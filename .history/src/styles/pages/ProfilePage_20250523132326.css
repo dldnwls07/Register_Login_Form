@@ -1,0 +1,220 @@
+/* 프로필 페이지 스타일 */
+.profile-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.profile-page h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.back-link {
+  margin-bottom: 2rem;
+}
+
+.back-link button {
+  background: none;
+  border: none;
+  color: #4263eb;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.back-link button:hover {
+  text-decoration: underline;
+}
+
+.profile-card {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+}
+
+.profile-card h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.profile-info {
+  margin-bottom: 2rem;
+}
+
+.profile-info p {
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+  color: #495057;
+}
+
+.profile-info strong {
+  color: #212529;
+  margin-right: 0.5rem;
+}
+
+.logout-button {
+  background-color: #e03131;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  position: relative;
+  overflow: hidden;
+}
+
+.logout-button:hover {
+  background-color: #c92a2a;
+}
+
+.logout-button:focus {
+  outline: 3px solid #ffa8a8;
+  outline-offset: 2px;
+}
+
+.logout-button:active {
+  transform: translateY(2px);
+}
+
+/* 로그아웃 버튼에 확인 절차 추가 */
+.logout-button.confirm {
+  background-color: #495057;
+}
+
+.logout-button.confirm::before {
+  content: "다시 클릭하면 로그아웃됩니다";
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #212529;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.logout-button.confirm:hover::before {
+  opacity: 1;
+}
+
+.data-management {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.data-management h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.migrate-button {
+  background-color: #4263eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.3s;
+  position: relative;
+}
+
+.migrate-button:hover {
+  background-color: #3249b1;
+}
+
+.migrate-button:focus {
+  outline: 3px solid #91a7ff;
+  outline-offset: 2px;
+}
+
+/* 데이터 마이그레이션은 중요한 작업이므로 시각적 강조 */
+.migrate-button::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border-radius: 12px;
+  background: linear-gradient(45deg, #4263eb, #91a7ff);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.migrate-button:hover::before {
+  opacity: 0.6;
+}
+
+/* 마이그레이션 작업 중 상태 표시 */
+.migrate-button.loading {
+  background-color: #748ffc;
+  cursor: wait;
+  pointer-events: none;
+}
+
+.migrate-button.loading::after {
+  content: "...";
+  animation: ellipsis 1.5s infinite;
+}
+
+@keyframes ellipsis {
+  0% { content: "."; }
+  33% { content: ".."; }
+  66% { content: "..."; }
+  100% { content: "."; }
+}
+
+.migration-status {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.migration-status.success {
+  background-color: #f4fce3;
+  color: #2b8a3e;
+  border-left: 4px solid #2b8a3e;
+}
+
+.migration-status.error {
+  background-color: #fff5f5;
+  color: #e03131;
+  border-left: 4px solid #e03131;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .profile-page {
+    padding: 1.5rem 1rem;
+  }
+  
+  .profile-card,
+  .data-management {
+    padding: 1.5rem;
+  }
+}

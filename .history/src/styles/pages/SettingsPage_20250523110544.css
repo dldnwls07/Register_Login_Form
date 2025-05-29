@@ -1,0 +1,150 @@
+/* 설정 페이지 스타일 */
+.settings-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.settings-page h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.back-link {
+  margin-bottom: 2rem;
+}
+
+.back-link a {
+  color: #4263eb;
+  font-weight: 500;
+  text-decoration: none;
+  font-size: 1rem;
+  display: inline-block;
+}
+
+.back-link a:hover {
+  text-decoration: underline;
+}
+
+.settings-section {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+}
+
+.settings-section h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #333;
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 0.75rem;
+}
+
+.setting-item {
+  padding: 1rem 0;
+  border-bottom: 1px solid #f1f3f5;
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.setting-item label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.setting-item span {
+  font-size: 1.1rem;
+  color: #495057;
+}
+
+.setting-item input[type="checkbox"] {
+  width: 36px;
+  height: 20px;
+  appearance: none;
+  background: #e9ecef;
+  border-radius: 20px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.setting-item input[type="checkbox"]:checked {
+  background-color: #4263eb;
+}
+
+.setting-item input[type="checkbox"]::before {
+  content: '';
+  width: 16px;
+  height: 16px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: left 0.3s;
+}
+
+.setting-item input[type="checkbox"]:checked::before {
+  left: 18px;
+}
+
+.setting-item select {
+  padding: 8px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  background-color: #fff;
+  font-size: 1rem;
+  min-width: 120px;
+}
+
+.profile-link {
+  display: block;
+  padding: 12px 0;
+  color: #4263eb;
+  font-weight: 500;
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: color 0.2s;
+  border-bottom: 1px solid #f1f3f5;
+}
+
+.profile-link:hover {
+  color: #3249b1;
+}
+
+.data-export-button {
+  margin-top: 1.5rem;
+  background-color: #4263eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.data-export-button:hover {
+  background-color: #3249b1;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .settings-page {
+    padding: 1.5rem 1rem;
+  }
+  
+  .settings-section {
+    padding: 1.5rem;
+  }
+}

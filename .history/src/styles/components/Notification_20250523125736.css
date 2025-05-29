@@ -1,0 +1,137 @@
+/* 알림 관련 스타일 */
+
+/* 알림 컨테이너 */
+.notification-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  width: 350px;
+  max-width: 80vw;
+}
+
+/* 알림 아이템 */
+.notification {
+  background-color: var(--card-background);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  margin-bottom: 10px;
+  overflow: hidden;
+  animation: slideIn 0.3s ease-out forwards;
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+.notification-exiting {
+  animation: slideOut 0.3s ease-in forwards;
+}
+
+/* 알림 내용 */
+.notification-content {
+  padding: 15px;
+  flex-grow: 1;
+}
+
+.notification-title {
+  margin: 0 0 5px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.notification-message {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+/* 알림 상태 표시줄 */
+.notification-progress {
+  height: 3px;
+  background-color: var(--primary-color);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  animation-name: progress;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+/* 알림 타입별 아이콘 */
+.notification-icon {
+  width: 50px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.notification-icon.info {
+  background-color: var(--primary-color);
+}
+
+.notification-icon.success {
+  background-color: #4CAF50;
+}
+
+.notification-icon.warning {
+  background-color: #FFC107;
+}
+
+.notification-icon.error {
+  background-color: #F44336;
+}
+
+/* 알림 액션 버튼 */
+.notification-actions {
+  display: flex;
+  margin-top: 10px;
+}
+
+.notification-button {
+  background: none;
+  border: none;
+  padding: 5px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--primary-color);
+}
+
+.notification-button:hover {
+  text-decoration: underline;
+}
+
+/* 애니메이션 */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes progress {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}

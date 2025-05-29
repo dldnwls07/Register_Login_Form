@@ -1,0 +1,339 @@
+.stepper-register-form {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stepper-progress {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  position: relative;
+  padding: 0 20px;
+}
+
+.stepper-progress::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #e0e0e0;
+  z-index: 1;
+}
+
+.step {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  position: relative;
+  z-index: 2;
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.step::before {
+  content: attr(data-title);
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 12px;
+  color: #666;
+}
+
+.step.active {
+  border-color: #007bff;
+  background: #007bff;
+  color: #fff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+}
+
+.step.active::before {
+  color: #007bff;
+  font-weight: bold;
+}
+
+.step.completed {
+  border-color: #28a745;
+  background: #28a745;
+  color: #fff;
+}
+
+.step.completed::after {
+  content: '✓';
+  position: absolute;
+  color: #fff;
+  font-size: 14px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  height: 42px;
+}
+
+.form-group input.input-success {
+  border-color: #28a745;
+}
+
+.input-status {
+  margin-top: 6px;
+  min-height: 20px;
+}
+
+.input-help {
+  color: #666;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+
+.success-text {
+  color: #28a745;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+}
+
+.form-group .input-help {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+}
+
+.form-group input.input-success {
+  border-color: #28a745;
+  background-color: #f8fff8;
+}
+
+.form-group input.input-success + .input-help {
+  color: #28a745;
+}
+
+.form-group input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  outline: none;
+}
+
+.form-group input.input-error {
+  border-color: #dc3545;
+  background-color: #fff8f8;
+}
+
+.form-group input.input-success {
+  border-color: #28a745;
+  background-color: #f8fff8;
+}
+
+.error-text {
+  color: #dc3545;
+  font-size: 14px;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.error-text::before {
+  content: '⚠';
+}
+
+.verification-code-group {
+  display: flex;
+  gap: 10px;
+  position: relative;
+}
+
+.verification-code-group input {
+  flex: 1;
+  letter-spacing: 4px;
+  font-family: monospace;
+  text-align: center;
+}
+
+.resend-button {
+  padding: 10px 15px;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+  min-width: 100px;
+  position: relative;
+  overflow: hidden;
+}
+
+.resend-button:not(:disabled):hover {
+  background: #5a6268;
+}
+
+.resend-button:disabled {
+  background: #adb5bd;
+  cursor: not-allowed;
+}
+
+.countdown {
+  position: absolute;
+  top: -20px;
+  right: 0;
+  font-size: 12px;
+  color: #dc3545;
+}
+
+.password-strength {
+  height: 4px;
+  background: #e0e0e0;
+  margin-top: 5px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.password-strength-bar {
+  height: 100%;
+  transition: all 0.3s ease;
+}
+
+.strength-weak {
+  width: 33.33%;
+  background: #dc3545;
+}
+
+.strength-medium {
+  width: 66.66%;
+  background: #ffc107;
+}
+
+.strength-strong {
+  width: 100%;
+  background: #28a745;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.back-button,
+.next-button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.back-button {
+  background: #6c757d;
+  color: white;
+  flex: 1;
+}
+
+.back-button::before {
+  content: '←';
+}
+
+.next-button {
+  background: #007bff;
+  color: white;
+  flex: 2;
+}
+
+.next-button:not(:disabled)::after {
+  content: '→';
+}
+
+.back-button:hover:not(:disabled) {
+  background: #5a6268;
+  transform: translateX(-2px);
+}
+
+.next-button:hover:not(:disabled) {
+  background: #0056b3;
+  transform: translateX(2px);
+}
+
+.back-button:disabled,
+.next-button:disabled {
+  background: #adb5bd;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* 애니메이션 효과 */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.form-group {
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+.error-text {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* 접근성 포커스 표시 */
+.form-group input:focus-visible,
+.back-button:focus-visible,
+.next-button:focus-visible,
+.resend-button:focus-visible {
+  outline: 3px solid rgba(0, 123, 255, 0.5);
+  outline-offset: 1px;
+}

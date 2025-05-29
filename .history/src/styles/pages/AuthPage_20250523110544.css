@@ -1,0 +1,43 @@
+/* 인증 페이지 스타일 */
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 500px;
+  padding: 20px;
+  text-align: center;
+}
+
+.auth-page h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: #4263eb;
+  font-weight: 700;
+}
+
+.auth-description {
+  font-size: 1.1rem;
+  color: #495057;
+  margin-bottom: 2rem;
+}
+
+/* 반응형 조정 */
+@media (max-width: 576px) {
+  .auth-container {
+    padding: 15px;
+  }
+  
+  .auth-page h1 {
+    font-size: 2rem;
+  }
+  
+  .auth-description {
+    font-size: 1rem;
+  }
+}

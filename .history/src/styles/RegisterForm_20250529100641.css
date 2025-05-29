@@ -1,0 +1,293 @@
+body {
+    background-color: #f8f9fa;
+}
+
+/* 통합된 회원가입/로그인 스타일 */
+.auth-container {
+    max-width: 460px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 50px 40px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.button-container {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    width: 100%;
+}
+
+.auth-button {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 8px;
+    background: #00c471;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.2s;
+    margin-top: 8px;
+}
+
+.auth-button.secondary {
+    background: #f5f6f7;
+    color: #333;
+}
+
+.auth-button:hover:not(:disabled) {
+    background: #00b366;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,196,113,0.15);
+}
+
+.auth-button.secondary:hover {
+    background: #e9ecef;
+    box-shadow: none;
+}
+
+/* 단계 인디케이터 간격 넓히기 */
+.step-indicator-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    margin: 0 auto 36px;
+    position: relative;
+    padding: 0 10px;
+}
+
+/* 연결선을 먼저 그리기 */
+.step-indicator-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: #e9ecef;
+    transform: translateY(-50%);
+    z-index: 0;
+}
+
+.step-circle {
+    position: relative;
+    width: 36px;  /* 크기 증가 */
+    height: 36px;
+    border: 2px solid #e1e1e1;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: #bdbdbd;
+    z-index: 1;
+    transition: all 0.3s;
+}
+
+.step-circle.completed {
+    border-color: #00c471;
+    background: #00c471;
+    color: #fff;
+}
+
+/* 연결선 위치 조정 */
+.step-indicator-container::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    height: 2px;
+    background: #00c471;
+    transform: translateY(-50%);
+    z-index: 0;
+    width: calc((var(--step) - 1) * 26.67%);  /* 조정된 계산식 */
+    transition: width 0.3s;
+}
+
+.auth-title {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 15px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 15px 16px;
+    font-size: 16px;
+    background-color: #fafafa;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+}
+
+.form-group input:focus {
+    border-color: #00c471;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(0,196,113,0.1);
+    outline: none;
+}
+
+/* 로그인 폼 스타일 */
+.form-check {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 8px;
+}
+
+.form-check input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #00c471;
+}
+
+.form-check label {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 0;
+    font-weight: normal;
+}
+
+.forgot-password {
+    text-align: center;
+    margin-top: 24px;
+}
+
+.forgot-password a {
+    color: #666;
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.forgot-password a:hover {
+    color: #00c471;
+    text-decoration: underline;
+}
+
+/* 폼 단계 스타일 수정 - 한 화면에 한 단계만 보이도록 수정 */
+.form-container {
+    position: relative;
+    min-height: 320px; /* 높이 증가하여 모든 내용 표시 */
+    width: 100%;
+    overflow: visible; /* visible로 변경하여 내용이 넘쳐도 보이게 함 */
+}
+
+.form-step {
+    position: absolute;
+    width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(100px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    height: auto; /* 높이 auto로 설정 */
+}
+
+.form-step.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+    pointer-events: auto;
+    position: relative; /* absolute 대신 relative로 변경 */
+    display: block; /* 명시적으로 block 표시 */
+}
+
+/* 이전/다음 단계 트랜지션 효과 개선 */
+.form-step:not(.active) {
+    transform: translateX(-100px);
+    position: absolute; /* 비활성 상태에서는 absolute */
+    top: 0;
+    left: 0;
+}
+
+/* 비밀번호 필드가 있는 마지막 단계 높이 조정 */
+.form-step:nth-child(4) {
+    min-height: 400px; /* 비밀번호 확인 필드가 있는 마지막 단계 높이 증가 */
+}
+
+/* 비밀번호 강도 표시 스타일 */
+.password-strength-meter {
+    margin-top: 8px;
+    height: 4px;
+    background: #e0e0e0;
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+}
+
+.password-strength-bar {
+    height: 100%;
+    width: 0;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+.password-strength {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+    font-size: 14px;
+    gap: 8px;
+}
+
+.password-strength-text {
+    font-weight: 600;
+}
+
+/* 강도별 스타일 */
+.strength-danger .password-strength-bar {
+    width: 25%;
+    background: #ff4d4f;
+}
+
+.strength-warning .password-strength-bar {
+    width: 50%;
+    background: #faad14;
+}
+
+.strength-normal .password-strength-bar {
+    width: 75%;
+    background: #1890ff;
+}
+
+.strength-safe .password-strength-bar {
+    width: 100%;
+    background: #52c41a;
+}
+
+.strength-danger .password-strength-text {
+    color: #ff4d4f;
+}
+
+.strength-warning .password-strength-text {
+    color: #faad14;
+}
+
+.strength-normal .password-strength-text {
+    color: #1890ff;
+}
+
+.strength-safe .password-strength-text {
+    color: #52c41a;
+}

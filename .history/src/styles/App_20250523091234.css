@@ -1,0 +1,110 @@
+/* Added CSS variables for theme */
+:root {
+  --background-light: #f9f9f9;
+  --background-dark: #121212;
+  --text-light: #333;
+  --text-dark: #eee;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--background-light);
+  color: var(--text-light);
+  margin: 0;
+  padding: 0;
+}
+
+.dark body {
+  background-color: var(--background-dark);
+  color: var(--text-dark);
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+}
+
+header {
+    background: #35424a;
+    color: #ffffff;
+    padding: 10px 0;
+    text-align: center;
+}
+
+h1 {
+    margin: 0;
+}
+
+form {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    background: #35424a;
+    color: #ffffff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #45a049;
+}
+
+.table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.table th {
+    background-color: #35424a;
+    color: white;
+}
+
+.summary {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.pie-chart {
+    margin-top: 20px;
+}
+
+/* Added media query for responsiveness */
+@media (max-width: 768px) {
+  .entry-form {
+    flex-direction: column;
+  }
+
+  .search-bar input {
+    width: 90%;
+  }
+
+  .pie-chart {
+    width: 90%;
+  }
+}

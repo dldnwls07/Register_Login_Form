@@ -1,0 +1,139 @@
+.button-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.auth-button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.auth-button.primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.auth-button.secondary {
+    background-color: #e0e0e0;
+    color: var(--text-color);
+}
+
+.auth-button:hover {
+    opacity: 0.9;
+}
+
+.auth-button:disabled {
+    background-color: #e0e0e0;
+    cursor: not-allowed;
+}
+
+.step-indicator-container {
+    margin-bottom: 30px; /* 간격 증가 */
+    position: relative;
+    width: 100%;
+    max-width: 400px; /* 적절한 최대 너비 설정 */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.progress-bar {
+    height: 8px; /* 높이 증가 */
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background-color: #4caf50;
+    width: 0;
+    transition: width 0.4s ease;
+}
+
+.step-circles {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    top: -15px; /* 위치 조정 */
+    left: 0;
+    right: 0;
+}
+
+.step-circle {
+    width: 30px; /* 크기 증가 */
+    height: 30px; /* 크기 증가 */
+    border: 3px solid #ccc; /* 테두리 두께 증가 */
+    border-radius: 50%;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px; /* 글자 크기 증가 */
+    color: #ccc;
+    transition: all 0.4s ease;
+}
+
+.step-circle.completed {
+    border-color: #4caf50;
+    background-color: #4caf50;
+    color: white;
+    font-weight: bold;
+}
+
+.password-conditions {
+    font-size: 12px;
+    color: #888;
+    margin-top: 5px;
+}
+
+.password-strength {
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.password-strength.위험 {
+    color: red;
+}
+
+.password-strength.경고 {
+    color: orange;
+}
+
+.password-strength.안전 {
+    color: green;
+}
+
+.form-container {
+    position: relative;
+    height: 300px; /* 적절한 높이 설정 */
+    overflow: hidden;
+}
+
+.form-step {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.form-step.active {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.form-step:not(.active) {
+    opacity: 0;
+    transform: translateX(-100%);
+}

@@ -1,0 +1,76 @@
+/* 인증 페이지 스타일 */
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 400px; /* 폼의 너비를 줄여 더 집중된 레이아웃 제공 */
+  margin: 0 auto;
+  padding: 40px 30px; /* 좌우 여백을 더 추가 */
+  text-align: center;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.auth-page h1 {
+  font-size: 2rem; /* 제목 크기를 약간 줄임 */
+  margin-bottom: 1rem;
+  color: #4263eb;
+  font-weight: 700;
+}
+
+.auth-description {
+  font-size: 1.1rem;
+  color: #495057;
+  margin-bottom: 2rem;
+}
+
+.auth-container .form-group {
+  margin-bottom: 20px; /* 입력 필드 간의 간격 추가 */
+}
+
+.auth-container .form-group input {
+  padding: 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+.auth-container .form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+/* 반응형 조정 */
+@media (max-width: 576px) {
+  .auth-container {
+    padding: 15px;
+  }
+  
+  .auth-page h1 {
+
+
+
+
+
+
+
+
+
+
+
+}  }    font-size: 13px; /* 입력 필드 폰트 크기 조정 */  .auth-container .form-group input {  }    font-size: 1rem; /* 설명 텍스트 크기 조정 */  .auth-description {  }    font-size: 1.5rem; /* 제목 크기를 더 줄여서 반응형 최적화 */    font-size: 2rem;
+  }
+  
+  .auth-description {
+    font-size: 1rem;
+  }
+}

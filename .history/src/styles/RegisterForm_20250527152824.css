@@ -1,0 +1,84 @@
+.button-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.auth-button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.auth-button.primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.auth-button.secondary {
+    background-color: #e0e0e0;
+    color: var(--text-color);
+}
+
+.auth-button:hover {
+    opacity: 0.9;
+}
+
+.auth-button:disabled {
+    background-color: #e0e0e0;
+    cursor: not-allowed;
+}
+
+.step-indicator {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.step-circle {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 5px;
+    font-size: 14px;
+    color: #ccc;
+}
+
+.step-circle.completed {
+    border-color: #4caf50;
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.password-conditions {
+    font-size: 12px;
+    color: #888;
+    margin-top: 5px;
+}
+
+.password-strength {
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.password-strength.위험 {
+    color: red;
+}
+
+.password-strength.경고 {
+    color: orange;
+}
+
+.password-strength.안전 {
+    color: green;
+}

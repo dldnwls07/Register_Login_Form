@@ -1,0 +1,643 @@
+/* 인증 폼 스타일 (로그인/회원가입) */
+
+.auth-form-container {
+  max-width: 360px;
+  margin: 0 auto;
+  padding: 26px 24px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeIn 0.5s ease, slideUp 0.5s ease;
+}
+
+@media (hover: hover) {
+  .auth-form-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.auth-title {
+  font-size: 1.6rem;
+  margin-bottom: 20px;
+  color: #333;
+  font-weight: 600;
+  text-align: center;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  margin-bottom: 3px;
+  color: #555;
+  font-weight: 500;
+}
+
+.form-group input {
+  padding: 11px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  background-color: #f9f9fb;
+  width: 100%;
+}
+
+.form-group input:focus {
+  border-color: #00a896;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 168, 150, 0.1);
+  background-color: #fff;
+}
+
+.form-group input:hover:not(:focus):not([disabled]) {
+  border-color: #c5c7ca;
+}
+
+.form-group input[disabled] {
+  background-color: #f8f9fa;
+  cursor: not-allowed;
+}
+
+.input-error {
+  color: #e03131;
+  font-size: 0.75rem;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  padding-left: 2px;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.input-error::before {
+  content: "•";
+  margin-right: 5px;
+  font-size: 0.85rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.auth-button {
+  background-color: #00a896;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 12px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: background 0.2s;
+}
+
+.auth-button:hover {
+  background-color: #028090;
+}
+
+.auth-button:disabled {
+  background-color: #adb5bd;
+  cursor: not-allowed;
+}
+
+.auth-button.loading {
+  position: relative;
+  opacity: 0.8;
+}
+
+.auth-button.loading::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 50%;
+  left: 50%;
+  margin-left: -10px;
+  margin-top: -10px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.auth-links {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 16px;
+  color: #6c757d;
+}
+
+.auth-links a {
+  color: #00a896;
+  text-decoration: none;
+  font-weight: 500;
+  position: relative;
+  padding-bottom: 2px;
+  transition: all 0.2s;
+}
+
+.auth-links a:hover {
+  color: #028090;
+}
+
+.auth-links a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #00a896;
+  transition: width 0.3s ease;
+}
+
+.auth-links a:hover::after {
+  width: 100%;
+}
+
+.auth-error-message,
+.auth-success-message {
+  padding: 10px 12px;
+  margin-bottom: 18px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+  animation: slideDown 0.3s ease-in-out;
+}
+
+.auth-error-message {
+  background-color: #fff5f5;
+  color: #e03131;
+  border-left: 3px solid #e03131;
+}
+
+.auth-error-message::before {
+  content: "⚠️";
+  margin-right: 8px;
+  font-size: 0.9rem;
+}
+
+.auth-success-message {
+  background-color: #ebfcf7;
+  color: #00a896;
+  border-left: 3px solid #00a896;
+}
+
+.auth-success-message::before {
+  content: "✅";
+  margin-right: 8px;
+  font-size: 0.9rem;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 비밀번호 강도 표시 스타일 */
+.password-strength {
+  margin-top: 6px;
+  margin-bottom: 5px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.strength-meter {
+  height: 4px;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  margin-bottom: 5px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.strength-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.strength-bar.strength-매우\ 약함 {
+  background-color: #ff4d4d;
+  background-image: linear-gradient(to right, #ff4d4d, #ff6666);
+}
+
+.strength-bar.strength-약함 {
+  background-color: #ffa64d;
+  background-image: linear-gradient(to right, #ffa64d, #ffc266);
+}
+
+.strength-bar.strength-중간 {
+  background-color: #ffdd4d;
+  background-image: linear-gradient(to right, #ffdd4d, #ffe680);
+}
+
+.strength-bar.strength-강함 {
+  background-color: #00a896;
+  background-image: linear-gradient(to right, #00a896, #02c39a);
+}
+
+.strength-text {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+}
+
+.strength-text.strength-매우\ 약함 {
+  color: #ff4d4d;
+}
+
+.strength-text.strength-매우\ 약함::before {
+  content: "⚠️";
+  font-size: 10px;
+  margin-right: 4px;
+}
+
+.strength-text.strength-약함 {
+  color: #ffa64d;
+}
+
+.strength-text.strength-약함::before {
+  content: "⚠️";
+  font-size: 10px;
+  margin-right: 4px;
+}
+
+.strength-text.strength-중간 {
+  color: #8a8a8a;
+}
+
+.strength-text.strength-중간::before {
+  content: "🔄";
+  font-size: 10px;
+  margin-right: 4px;
+}
+
+.strength-text.strength-강함 {
+  color: #00a896;
+}
+
+.strength-text.strength-강함::before {
+  content: "✓";
+  font-size: 10px;
+  margin-right: 4px;
+}
+
+/* 새로 추가된 스타일 */
+.email-group {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+  background-color: #f9f9fb;
+  transition: all 0.2s;
+}
+
+.email-group:focus-within {
+  border-color: #00a896;
+  box-shadow: 0 0 0 2px rgba(0, 168, 150, 0.1);
+  background-color: #fff;
+}
+
+.email-prefix {
+  flex: 2;
+  border: none;
+  border-radius: 0;
+  padding: 10px 12px;
+  border-right: 1px solid #e0e0e0;
+  background-color: transparent;
+}
+
+.email-prefix:focus {
+  outline: none;
+  box-shadow: none;
+  background-color: transparent;
+}
+
+.email-at {
+  padding: 0 8px;
+  background-color: #f1f9f9;
+  color: #495057;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  border-right: 1px solid #e0e0e0;
+}
+
+.email-domain {
+  flex: 1.5;
+  border: none;
+  border-radius: 0;
+  padding: 10px 8px;
+  background-color: #f1f9f9;
+  color: #495057;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23495057' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+.email-domain:focus {
+  outline: none;
+}
+
+.custom-domain {
+  margin-top: 8px;
+  position: relative;
+  animation: fadeDown 0.3s ease-out;
+}
+
+.custom-domain input {
+  width: 100%;
+  border-radius: 6px;
+  padding-left: 28px;
+}
+
+.custom-domain::before {
+  content: "→";
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #00a896;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.password-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-container input {
+  width: 100%;
+  padding-right: 65px; /* 버튼을 위한 충분한 공간 확보 */
+}
+
+.toggle-password-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: 1px solid #e0e0e0;
+  color: #495057;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 3px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.toggle-password-btn:hover {
+  background-color: #f1f9f9;
+  border-color: #00a896;
+  color: #00a896;
+}
+
+.toggle-password-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 168, 150, 0.2);
+}
+
+.input-error-field {
+  border-color: #e03131 !important;
+}
+
+.password-policy {
+  font-size: 0.75rem;
+  color: #495057;
+  margin-top: 6px;
+  padding: 10px 12px;
+  background-color: #f1f9f9;
+  border-radius: 6px;
+  border: 1px solid #e2f1f1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: all 0.3s ease;
+}
+
+.password-policy p {
+  margin: 0 0 6px 0;
+  font-weight: 500;
+  font-size: 0.75rem;
+  color: #05668d;
+}
+
+.password-policy ul {
+  margin: 0;
+  padding-left: 15px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4px;
+}
+
+.password-policy li {
+  margin-bottom: 2px;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  transition: color 0.3s ease;
+  position: relative;
+}
+
+.password-policy li.met {
+  color: #00a896;
+}
+
+.password-policy li.met::before {
+  content: "✓";
+  display: inline-block;
+  margin-right: 2px;
+  animation: pulseGreen 0.3s ease-in-out;
+}
+
+.password-policy li.not-met {
+  color: #e03131;
+}
+
+@keyframes pulseGreen {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0 6px;
+  font-size: 0.85rem;
+}
+
+.auto-login-option {
+  background-color: #f1f9f9;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  border: 1px solid #e2f1f1;
+  animation: fadeIn 0.3s ease;
+}
+
+.auto-login-info {
+  font-size: 0.75rem;
+  color: #05668d;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.remember-me input[type="checkbox"] {
+  margin-right: 6px;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 3px;
+  outline: none;
+  transition: all 0.2s;
+  cursor: pointer;
+  vertical-align: middle;
+  position: relative;
+}
+
+.remember-me input[type="checkbox"]:checked {
+  background-color: #00a896;
+  border-color: #00a896;
+}
+
+.remember-me input[type="checkbox"]:hover:not(:checked) {
+  background-color: #f1f9f9;
+}
+
+.remember-me input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 5px;
+  height: 9px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  display: block;
+}
+
+.forgot-password-link {
+  color: #00a896;
+  text-decoration: none;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.forgot-password-link:hover {
+  color: #028090;
+  text-decoration: underline;
+}
+
+.auth-warning-message {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background-color: #fff9db;
+  color: #f08c00;
+  font-size: 0.85rem;
+  border-left: 3px solid #f08c00;
+  display: flex;
+  align-items: center;
+}
+
+.auth-warning-message::before {
+  content: "⚠️";
+  font-size: 0.9rem;
+  margin-right: 6px;
+}
+
+/* 반응형 */
+@media (max-width: 480px) {
+  .auth-form-container {
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 90%;
+  }
+  
+  .auth-title {
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+  }
+
+  .auth-form {
+    gap: 12px;
+  }
+
+  .email-group {
+    flex-direction: column;
+  }
+
+  .email-prefix {
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .email-at {
+    display: none;
+  }
+
+  .email-domain {
+    flex: 1;
+  }
+
+  .form-options {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .auth-button {
+    padding: 10px;
+  }
+}

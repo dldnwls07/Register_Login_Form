@@ -1,0 +1,182 @@
+.button-container {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.auth-button {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    background: #00c471;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.auth-button.secondary {
+    background: #f5f6f7;
+    color: #333;
+}
+
+.auth-button:hover:not(:disabled) {
+    background: #00b366;
+    transform: translateY(-1px);
+}
+
+.step-indicator-container {
+    margin: 0 auto 40px;
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+}
+
+.progress-bar {
+    height: 6px;
+    background: #e9ecef;
+    border-radius: 3px;
+    margin: 32px 0 0 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4caf50 60%, #00c471 100%);
+    border-radius: 3px;
+    transition: width 0.4s cubic-bezier(.4,1,.7,1);
+}
+
+.step-circles {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    top: -18px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    pointer-events: none;
+}
+
+.step-circle {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #e9ecef;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: #bdbdbd;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.step-circle.completed {
+    border-color: #00c471;
+    background: #00c471;
+    color: white;
+}
+
+.step-circle.completed::after {
+    content: '✓';
+    font-size: 20px;
+}
+
+.auth-container {
+    max-width: 380px;
+    margin: 20px auto;
+    padding: 32px 24px;
+    background: #fff;
+    border-radius: 24px;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.07);
+}
+
+.auth-title {
+    text-align: center;
+    margin-bottom: 36px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #222;
+    letter-spacing: -1px;
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 16px;
+    border: 1px solid #e1e1e1;
+    border-radius: 12px;
+    font-size: 16px;
+    transition: all 0.2s ease;
+}
+
+.form-group input:focus {
+    border-color: #00c471;
+    box-shadow: 0 0 0 3px rgba(0,196,113,0.1);
+}
+
+.error-message {
+    color: #ff4d4f;
+    font-size: 15px;
+    margin-top: 10px;
+    text-align: left;
+}
+
+.password-conditions {
+    font-size: 13px;
+    color: #888;
+    margin-top: 7px;
+}
+
+.password-strength {
+    margin-top: 12px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.password-strength.위험 {
+    color: #ff4d4f;
+}
+
+.password-strength.경고 {
+    color: #ff9800;
+}
+
+.password-strength.안전 {
+    color: #00c471;
+}
+
+.form-container {
+    min-height: 380px;
+    position: relative;
+}
+
+.form-step {
+    position: absolute;
+    width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s cubic-bezier(.4,1,.7,1);
+}
+
+.form-step.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}

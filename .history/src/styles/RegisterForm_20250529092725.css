@@ -1,0 +1,145 @@
+body {
+    background-color: #f8f9fa;
+}
+
+/* 공통 인증 컨테이너 스타일 */
+.auth-container {
+    max-width: 460px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 40px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.auth-title {
+    text-align: center;
+    margin-bottom: 32px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+}
+
+/* 폼 요소 스타일 */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 14px;
+    background-color: #fafafa;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: all 0.2s;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    border-color: #60cb95;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(96,203,149,0.1);
+    outline: none;
+}
+
+/* 버튼 스타일 */
+.auth-button {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    margin-top: 16px;
+    background-color: #60cb95;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.auth-button:hover {
+    background-color: #50b583;
+}
+
+.auth-button.secondary {
+    background-color: #f5f6f7;
+    color: #333;
+    margin-right: 8px;
+}
+
+.auth-button.secondary:hover {
+    background-color: #e9ecef;
+}
+
+.button-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+/* 로그인 관련 추가 스타일 */
+.form-check {
+    display: flex;
+    align-items: center;
+    margin: 16px 0;
+}
+
+.form-check input[type="checkbox"] {
+    margin-right: 8px;
+    width: 16px;
+    height: 16px;
+    accent-color: #60cb95;
+}
+
+.form-check label {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 0;
+}
+
+.forgot-password {
+    text-align: center;
+    margin-top: 24px;
+}
+
+.forgot-password a {
+    color: #555;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.forgot-password a:hover {
+    color: #60cb95;
+    text-decoration: underline;
+}
+
+/* 회원가입 단계 스타일 */
+/* ...existing code for step indicators... */
+
+/* 오류 메시지 */
+.error-message {
+    color: #ff4d4f;
+    font-size: 13px;
+    margin: 6px 0 0;
+}
+
+/* 비밀번호 관련 스타일 */
+/* ...existing code for password conditions and strength... */
+
+/* 반응형 스타일 */
+@media (max-width: 480px) {
+    .auth-container {
+        padding: 30px 20px;
+    }
+}

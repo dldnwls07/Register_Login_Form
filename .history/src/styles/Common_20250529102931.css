@@ -1,0 +1,284 @@
+/* 공통 스타일 - 네비게이션, 헤더, 푸터 등 공통 요소 디자인 */
+
+:root {
+  --primary-color: #3182F6;
+  --accent-color: #00D1D1;
+  --text-color: #191F28;
+  --text-light: #666666;
+  --background-color: #F9FAFB;
+  --card-background: #FFFFFF;
+  --border-color: #E5E8EB;
+  --error-color: #F03E3E;
+  --success-color: #37B24D;
+  --border-radius: 16px;
+  --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  --hover-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  --transition: 0.2s ease;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+}
+
+/* 앱 레이아웃 */
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* 헤더 스타일 */
+.App-header {
+  background-color: var(--card-background);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.03);
+  padding: 1.25rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .header-container {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+.App-header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin: 0;
+}
+
+/* 메인 컨텐츠 스타일 */
+.App-content {
+  flex: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 2rem 1.5rem;
+}
+
+/* 푸터 스타일 */
+.App-footer {
+  background-color: var(--card-background);
+  padding: 1.5rem 0;
+  margin-top: 3rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-light);
+  border-top: 1px solid #eaeaea;
+}
+
+/* 네비게이션 스타일 */
+.main-navigation {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+@media (min-width: 768px) {
+  .main-navigation {
+    margin-top: 0;
+  }
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--text-light);
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.5rem;
+  transition: color var(--transition);
+  position: relative;
+}
+
+.nav-links a:before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--primary-color);
+  transition: width var(--transition);
+}
+
+.nav-links a:hover, .nav-links a.active {
+  background-color: #2D7FF9 !important; /* 더 어두운 파란색 */
+  color: #ffffff !important; /* 흰색 텍스트 */
+}
+
+.nav-links a:hover:before, .nav-links a.active:before {
+  width: 100%;
+}
+
+/* 인증 관련 스타일 */
+.auth-container {
+  max-width: 400px;
+  margin: 80px auto;
+  padding: 24px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.auth-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-color);
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 6px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.2s;
+}
+
+.form-group input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(49, 130, 246, 0.1);
+}
+
+.error-message {
+  color: var(--error-color);
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.auth-button {
+  width: 100%;
+  padding: 14px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.auth-button:hover {
+  background-color: #1B64DA;
+}
+
+.auth-button:disabled {
+  background-color: #E5E8EB;
+  cursor: not-allowed;
+}
+
+.auth-links {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.auth-links a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.auto-login {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.auth-page {
+    max-width: 460px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+.auth-nav {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+.auth-link {
+    flex: 1;
+    text-align: center;
+    font-size: 16px;
+    color: #666;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.auth-link.active {
+    background-color: #00c471;
+    color: white;
+}
+
+.auth-link:hover:not(.active) {
+    background-color: #e9ecef;
+}
+
+/* 아래 스타일들은 RegisterForm.css로 옮겨 중복 방지 */
+.auth-container,
+.auth-title,
+.form-group,
+.form-group label,
+.form-group input,
+.form-group input:focus,
+.error-message,
+.auth-button,
+.auth-button:hover,
+.auth-button:disabled,
+.auth-buttons,
+.auth-buttons .auth-button,
+.auth-buttons .auth-button:not(.active),
+.auth-buttons .auth-button.active {
+    /* 이 스타일들은 RegisterForm.css에서 관리 */
+}

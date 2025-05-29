@@ -1,0 +1,542 @@
+/**
+ * 사용자 인증 관련 기능을 처리하는 서비스
+ * 브라우저 환경용 구현 (MySQL 대신 localStorage 사용)
+ */
+
+// Web Crypto API를 활용한 인증 기능 추가
+import { hashPasswordWithCrypto, verifyPasswordWithCrypto, isSecureCryptoAvailable } from './cryptoUtils';
+
+// 브라우저 환경에 최적화된 인증 로직
+// 주의: 이 구현은 클라이언트 측에서만 사용됩니다.
+
+// 필요한 상수 정의
+const USERS_STORAGE_KEY = 'auth_users';
+const CURRENT_USER_KEY = 'auth_current_user';
+const TOKENS_KEY = 'auth_tokens';
+
+// 간단한 ID 생성
+const generateId = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
+
+// 초기 사용자 목록 로드
+const loadUsers = () => {
+  const usersJson = localStorage.getItem(USERS_STORAGE_KEY);
+  return usersJson ? JSON.parse(usersJson) : [];
+};
+
+// 사용자 목록 저장
+const saveUsers = (users) => {
+  localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+};
+
+// 강력한 비밀번호 해싱 (Web Crypto API 활용)
+const hashPassword = async (password) => {
+  try {
+    // Web Crypto API 지원 확인
+    if (isSecureCryptoAvailable()) {
+      // Web Crypto API를 사용한 안전한 해싱
+      const cryptoHash = await hashPasswordWithCrypto(password);
+      if (cryptoHash) {
+        return `crypto:${cryptoHash}`;
+      }
+    }
+    
+    // 폴백: 기존 해싱 알고리즘 (Web Crypto API가 지원되지 않는 경우)
+    // 안전한 salt 생성 - 무작위 문자열 사용
+    const randomBytes = new Uint8Array(16);
+    window.crypto.getRandomValues(randomBytes);
+    const salt = Array.from(randomBytes, b => b.toString(16).padStart(2, '0')).join('');
+    
+    // 반복 횟수 (브라우저 환경에 맞게 조정)
+    const iterations = 1000; // 브라우저 성능 고려하여 감소
+    
+    // 비밀번호와 salt를 합쳐서 해시 생성
+    let hash = password + salt;
+    
+    // 최적화된 해싱 (브라우저 환경에 적합한 방식)
+    const chunkSize = 100;
+    for (let chunk = 0; chunk < iterations; chunk += chunkSize) {
+      const currentChunk = Math.min(chunkSize, iterations - chunk);
+      
+      for (let i = 0; i < currentChunk; i++) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(hash);
+        hash = btoa(String.fromCharCode.apply(null, new Uint8Array(data)));
+      }
+    }
+    
+    // 저장 형식: legacy:iterations:salt:hash (legacy 표시 추가)
+    return `legacy:${iterations}:${salt}:${hash}`;
+  } catch (error) {
+    console.error('해싱 오류:', error);
+    // 폴백 메커니즘 (실제 서비스에서는 더 안전한 방식 사용)
+    return `fallback:${btoa(`secure_${password}_${Date.now()}`)}`;
+  }
+};
+
+// 최적화된 비밀번호 비교 (Web Crypto API 포함)
+const comparePassword = async (password, storedHash) => {
+  try {
+    // 해시 유형 확인
+    if (storedHash.startsWith('crypto:')) {
+      // Web Crypto API로 생성된 해시 검증
+      const cryptoHash = storedHash.substring(7); // 'crypto:' 접두사 제거
+      return await verifyPasswordWithCrypto(password, cryptoHash);
+    }    else if (storedHash.startsWith('legacy:')) {
+      // 기존 방식으로 생성된 해시 검증
+      const parts = storedHash.split(':');
+      const iterations = parts[1];
+      const salt = parts[2];
+      const hash = parts[3];
+      
+      // 같은 방식으로 해시 생성
+      let compareHash = password + salt;
+      
+      // 최적화된 반복 처리
+      const iterCount = parseInt(iterations);
+      const chunkSize = 100;
+      
+      for (let chunk = 0; chunk < iterCount; chunk += chunkSize) {
+        const currentChunk = Math.min(chunkSize, iterCount - chunk);
+        
+        for (let i = 0; i < currentChunk; i++) {
+          const encoder = new TextEncoder();
+          const data = encoder.encode(compareHash);
+          compareHash = btoa(String.fromCharCode.apply(null, new Uint8Array(data)));
+        }
+      }
+      
+      // 해시 비교
+      return hash === compareHash;
+    }
+    else if (storedHash.startsWith('fallback:')) {
+      // 폴백 방식으로 생성된 해시는 보안상 새로운 방식으로 변경 권장
+      console.warn('안전하지 않은 해시 방식이 사용되었습니다. 재설정을 권장합니다.');
+      return false;
+    }
+    else {
+      // 기존 형식의 해시 (하위 호환성 유지)
+      const [iterations, salt, hash] = storedHash.split(':');
+      
+      // 같은 방식으로 해시 생성
+      let compareHash = password + salt;
+      
+      // 최적화된 반복 처리
+      const iterCount = parseInt(iterations);
+      const chunkSize = 100;
+      
+      for (let chunk = 0; chunk < iterCount; chunk += chunkSize) {
+        const currentChunk = Math.min(chunkSize, iterCount - chunk);
+        
+        for (let i = 0; i < currentChunk; i++) {
+          const encoder = new TextEncoder();
+          const data = encoder.encode(compareHash);
+          compareHash = btoa(String.fromCharCode.apply(null, new Uint8Array(data)));
+        }
+      }
+      
+      return hash === compareHash;
+    }
+  } catch (error) {
+    console.error('비밀번호 비교 오류:', error);
+    return false;
+  }
+};
+
+// 보다 안전한 토큰 생성
+const generateToken = (userData) => {
+  // userData에서 중요한 정보만 선택
+  const payload = {
+    id: userData.id,
+    username: userData.username,
+    role: userData.role || 'user',
+    iat: Math.floor(Date.now() / 1000)
+  };
+    // 토큰 시크릿 키 (실제로는 환경 변수나 별도 설정에서 로드)
+  const secretKey = process.env.REACT_APP_JWT_SECRET || 'your-256-bit-secret' + window.navigator.userAgent + Date.now().toString();
+  
+  // 헤더
+  const header = {
+    alg: 'HS256',
+    typ: 'JWT'
+  };
+  
+  // Base64 인코딩
+  const encodedHeader = btoa(JSON.stringify(header));
+  const encodedPayload = btoa(JSON.stringify(payload));
+  
+  // 서명 생성 (실제 JWT에서는 HMAC-SHA256 사용)
+  // 여기서는 간단한 시뮬레이션만 제공
+  const signature = btoa(
+    generateHmacSignature(
+      `${encodedHeader}.${encodedPayload}`, 
+      secretKey
+    )
+  );
+  
+  // 토큰 조합
+  const token = `${encodedHeader}.${encodedPayload}.${signature}`;
+  
+  // 토큰 저장
+  const tokens = JSON.parse(localStorage.getItem(TOKENS_KEY) || '{}');
+  tokens[token] = {
+    userId: userData.id,
+    expiresAt: Date.now() + (24 * 60 * 60 * 1000), // 24시간
+    userAgent: window.navigator.userAgent, // 사용자 에이전트 저장
+    createdAt: Date.now()
+  };
+  localStorage.setItem(TOKENS_KEY, JSON.stringify(tokens));
+  
+  return token;
+};
+
+// 간단한 HMAC 시그니처 시뮬레이션 (브라우저 환경에서 가능한 방식)
+function generateHmacSignature(data, key) {
+  // 실제로는 HMAC-SHA256을 사용해야 함
+  // 여기서는 간단한 시뮬레이션
+  let signature = '';
+  for (let i = 0; i < data.length; i++) {
+    signature += String.fromCharCode(
+      data.charCodeAt(i) ^ key.charCodeAt(i % key.length)
+    );
+  }
+  return signature;
+}
+
+/**
+ * 새 사용자 등록(회원가입)
+ * @param {Object} userData - 사용자 데이터 (username, email, password)
+ * @returns {Promise<Object>} - 등록된 사용자 정보(비밀번호 제외)
+ */
+export async function registerUser(userData) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { username, email, password } = userData;
+      const users = loadUsers();
+      
+      // 이미 등록된 사용자인지 확인
+      const existingUser = users.find(u => u.username === username || u.email === email);
+      if (existingUser) {
+        if (existingUser.username === username) {
+          return reject(new Error('이미 사용 중인 사용자 이름입니다.'));
+        } else {
+          return reject(new Error('이미 등록된 이메일 주소입니다.'));
+        }
+      }
+      
+      // 비밀번호 강도 검증
+      const strength = measurePasswordStrength(password);
+      if (strength.score < 6) {
+        return reject(new Error(`비밀번호가 취약합니다: ${strength.feedback}`));
+      }
+      
+      // 비밀번호 해싱 (비동기 함수)
+      const passwordHash = await hashPassword(password);
+      
+      // 새 사용자 생성
+      const newUser = {
+        id: generateId(),
+        username,
+        email,
+        password_hash: passwordHash,
+        created_at: new Date().toISOString()
+      };
+      
+      users.push(newUser);
+      saveUsers(users);
+      
+      const { password_hash, ...userWithoutPassword } = newUser;
+      resolve(userWithoutPassword);
+    } catch (error) {
+      reject(new Error(`회원가입 오류: ${error.message}`));
+    }
+  });
+}
+
+/**
+ * 사용자 로그인
+ * @param {string} usernameOrEmail - 사용자 이름 또는 이메일
+ * @param {string} password - 비밀번호
+ * @returns {Promise<Object>} - 로그인된 사용자 정보와 토큰
+ */
+export async function loginUser(usernameOrEmail, password) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // 입력 유효성 검증
+      if (!usernameOrEmail || !password) {
+        return reject(new Error('사용자 이름/이메일과 비밀번호를 모두 입력해주세요.'));
+      }
+      
+      const users = loadUsers();
+      
+      const user = users.find(u => 
+        u.username === usernameOrEmail || u.email === usernameOrEmail
+      );
+      
+      if (!user) {
+        // 보안을 위해 지연 시간 추가 (타이밍 공격 방지)
+        await new Promise(r => setTimeout(r, 500 + Math.random() * 500));
+        return reject(new Error('아이디 또는 비밀번호가 일치하지 않습니다.'));
+      }
+      
+      // 비동기 비밀번호 검증
+      const isPasswordValid = await comparePassword(password, user.password_hash);
+      
+      if (!isPasswordValid) {
+        // 보안을 위해 지연 시간 추가 (타이밍 공격 방지)
+        await new Promise(r => setTimeout(r, 500 + Math.random() * 500));
+        return reject(new Error('아이디 또는 비밀번호가 일치하지 않습니다.'));
+      }
+      
+      // 비밀번호 해싱 방식이 구버전인 경우 새 방식으로 업그레이드
+      if (!user.password_hash.startsWith('crypto:')) {
+        // 비밀번호 재해싱 (최신 방식으로 업그레이드)
+        user.password_hash = await hashPassword(password);
+        saveUsers(users);
+      }
+      
+      // 현재 사용자 정보 저장
+      const { password_hash, ...userWithoutPassword } = user;
+      localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(userWithoutPassword));
+      
+      // 토큰 생성
+      const token = generateToken(userWithoutPassword);
+      
+      // 마지막 로그인 시간 업데이트
+      user.last_login = new Date().toISOString();
+      saveUsers(users);
+      
+      resolve({
+        user: userWithoutPassword,
+        token
+      });
+    } catch (error) {
+      reject(new Error('로그인 처리 중 오류가 발생했습니다.'));
+    }
+  });
+}
+
+/**
+ * JWT 토큰 검증
+ * @param {string} token - JWT 토큰
+ * @returns {Promise<Object>} - 검증된 사용자 정보
+ */
+export function verifyToken(token) {
+  return new Promise((resolve, reject) => {
+    try {
+      // 토큰 형식 검증
+      if (!token || typeof token !== 'string' || !token.includes('.')) {
+        throw new Error('유효하지 않은 토큰 형식입니다.');
+      }
+      
+      // 토큰 분해
+      const [encodedHeader, encodedPayload, signature] = token.split('.');
+      
+      // 위변조 검증
+      const secretKey = 'your-256-bit-secret' + window.navigator.userAgent;
+      const calculatedSignature = btoa(
+        generateHmacSignature(
+          `${encodedHeader}.${encodedPayload}`, 
+          secretKey
+        )
+      );
+      
+      if (calculatedSignature !== signature) {
+        throw new Error('토큰 서명이 유효하지 않습니다.');
+      }
+      
+      // 토큰 데이터 확인
+      const tokens = JSON.parse(localStorage.getItem(TOKENS_KEY) || '{}');
+      const tokenData = tokens[token];
+      
+      if (!tokenData) {
+        throw new Error('저장된 토큰 정보를 찾을 수 없습니다.');
+      }
+      
+      // 만료 확인
+      if (tokenData.expiresAt < Date.now()) {
+        // 만료된 토큰 제거
+        delete tokens[token];
+        localStorage.setItem(TOKENS_KEY, JSON.stringify(tokens));
+        throw new Error('토큰이 만료되었습니다. 다시 로그인해주세요.');
+      }
+      
+      // 사용자 에이전트 확인 (세션 하이재킹 방지)
+      if (tokenData.userAgent !== window.navigator.userAgent) {
+        throw new Error('다른 브라우저나 기기에서의 접근이 감지되었습니다.');
+      }
+      
+      // 페이로드 디코딩
+      let payload;
+      try {
+        payload = JSON.parse(atob(encodedPayload));
+      } catch (e) {
+        throw new Error('토큰 페이로드를 디코딩할 수 없습니다.');
+      }
+      
+      // 사용자 존재 여부 확인
+      const users = loadUsers();
+      const user = users.find(u => u.id === payload.id);
+      
+      if (!user) {
+        throw new Error('토큰에 해당하는 사용자를 찾을 수 없습니다.');
+      }
+      
+      // 토큰 만료 시간 연장 (필요한 경우)
+      tokenData.expiresAt = Date.now() + (24 * 60 * 60 * 1000); // 24시간 연장
+      localStorage.setItem(TOKENS_KEY, JSON.stringify(tokens));
+      
+      // 사용자 정보 반환 (비밀번호 해시 제외)
+      const { password_hash, ...userWithoutPassword } = user;
+      resolve(userWithoutPassword);
+    } catch (error) {
+      console.error('토큰 검증 오류:', error);
+      reject(new Error(error.message || '유효하지 않은 토큰입니다.'));
+    }
+  });
+}
+
+/**
+ * 현재 사용자 정보 가져오기 (보안 강화 버전)
+ * @param {string} userId - 사용자 ID
+ * @returns {Promise<Object>} - 사용자 정보
+ */
+export async function getCurrentUser(userId) {
+  return new Promise((resolve, reject) => {
+    try {
+      // 유효한 ID인지 검증
+      if (!userId || typeof userId !== 'string') {
+        throw new Error('유효하지 않은 사용자 ID입니다.');
+      }
+      
+      // 사용자 데이터 로드
+      const users = loadUsers();
+      const user = users.find(u => u.id === userId);
+      
+      if (!user) {
+        throw new Error('사용자를 찾을 수 없습니다.');
+      }
+      
+      // 마지막 활동 시간 업데이트
+      user.last_active = new Date().toISOString();
+      saveUsers(users);
+      
+      // 활성 세션 확인
+      const tokens = JSON.parse(localStorage.getItem(TOKENS_KEY) || '{}');
+      const hasActiveSession = Object.values(tokens).some(t => 
+        t.userId === userId && t.expiresAt > Date.now()
+      );
+      
+      if (!hasActiveSession) {
+        throw new Error('활성화된 세션이 없습니다. 다시 로그인해주세요.');
+      }
+      
+      // 민감한 정보 제외하고 반환
+      const { password_hash, security_question, security_answer, ...userWithoutSensitiveInfo } = user;
+      resolve(userWithoutSensitiveInfo);
+      
+    } catch (error) {
+      console.error('사용자 정보 조회 오류:', error);
+      reject(new Error(error.message || '사용자 정보를 조회할 수 없습니다.'));
+    }
+  });
+}
+
+/**
+ * 사용자 로그아웃 처리
+ * @param {string} token - 현재 사용자 토큰
+ * @returns {Promise<void>}
+ */
+export async function logoutUser(token) {  return new Promise((resolve) => {
+    try {
+      // 토큰이 제공된 경우 해당 토큰만 무효화
+      if (token) {
+        const tokens = JSON.parse(localStorage.getItem(TOKENS_KEY) || '{}');
+        
+        // 토큰 제거
+        if (tokens[token]) {
+          delete tokens[token];
+          localStorage.setItem(TOKENS_KEY, JSON.stringify(tokens));
+        }
+      }
+      
+      // 항상 현재 사용자 정보 삭제
+      localStorage.removeItem(CURRENT_USER_KEY);
+      
+      resolve();
+    } catch (error) {
+      console.error('로그아웃 처리 중 오류:', error);
+      resolve(); // 로그아웃은 항상 성공으로 처리
+    }
+  });
+}
+
+/**
+ * 모든 사용자 세션 무효화 (관리자 기능)
+ * @param {string} userId - 사용자 ID
+ * @returns {Promise<void>}
+ */
+export async function invalidateAllSessions(userId) {
+  return new Promise((resolve, reject) => {
+    try {
+      const tokens = JSON.parse(localStorage.getItem(TOKENS_KEY) || '{}');
+      
+      // 해당 사용자의 모든 토큰 찾기
+      Object.keys(tokens).forEach(tokenKey => {
+        if (tokens[tokenKey].userId === userId) {
+          delete tokens[tokenKey];
+        }
+      });
+      
+      // 업데이트된 토큰 저장
+      localStorage.setItem(TOKENS_KEY, JSON.stringify(tokens));
+      resolve();
+    } catch (error) {
+      reject(new Error('세션 무효화 중 오류가 발생했습니다.'));
+    }
+  });
+}
+
+/**
+ * 비밀번호 강도 측정 함수
+ * @param {string} password - 측정할 비밀번호
+ * @returns {Object} - 비밀번호 강도 정보
+ */
+export function measurePasswordStrength(password) {
+  // 비밀번호가 없는 경우
+  if (!password) {
+    return { score: 0, feedback: '비밀번호를 입력해주세요.' };
+  }
+  
+  // 비밀번호 길이 점수 (최대 5점)
+  const lengthScore = Math.min(5, Math.floor(password.length / 2));
+  
+  // 문자 다양성 점수 (최대 5점)
+  let varietyScore = 0;
+  if (/[a-z]/.test(password)) varietyScore++; // 소문자
+  if (/[A-Z]/.test(password)) varietyScore++; // 대문자
+  if (/[0-9]/.test(password)) varietyScore++; // 숫자 
+  if (/[^a-zA-Z0-9]/.test(password)) varietyScore += 2; // 특수문자
+  
+  // 총점 (10점 만점)
+  const totalScore = lengthScore + varietyScore;
+  
+  // 피드백 생성
+  let feedback = '';
+  if (totalScore < 4) {
+    feedback = '매우 약한 비밀번호입니다. 더 길고 다양한 문자를 사용하세요.';
+  } else if (totalScore < 6) {
+    feedback = '약한 비밀번호입니다. 특수문자를 추가하세요.';
+  } else if (totalScore < 8) {
+    feedback = '적당한 비밀번호입니다. 더 다양한 종류의 문자를 사용하면 좋습니다.';
+  } else {
+    feedback = '강력한 비밀번호입니다!';
+  }
+  
+  return {
+    score: totalScore,
+    strength: totalScore < 4 ? '매우 약함' : 
+              totalScore < 6 ? '약함' : 
+              totalScore < 8 ? '중간' : '강함',
+    feedback
+  };
+}

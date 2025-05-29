@@ -1,0 +1,282 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.button-container {
+    display: flex;
+    gap: 8px; /* 간격 줄임 */
+    margin-top: 20px;
+    width: 100%;
+}
+
+.auth-button {
+    width: 100%;
+    padding: 16px; /* 버튼 높이 증가 */
+    border: none;
+    border-radius: 8px; /* 각도 줄임 - 이미지처럼 */
+    background: #00c471;
+    color: white;
+    font-size: 16px; /* 폰트 크기 줄임 */
+    font-weight: 600;
+    transition: all 0.2s;
+    margin-top: 8px;
+}
+
+.auth-button.secondary {
+    background: #f5f6f7;
+    color: #333;
+}
+
+.auth-button:hover:not(:disabled) {
+    background: #00b366;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,196,113,0.15);
+}
+
+.auth-button.secondary:hover {
+    background: #e9ecef;
+    box-shadow: none;
+}
+
+.auth-container {
+    max-width: 460px; /* 이미지처럼 좀 더 넓게 */
+    width: 100%;
+    margin: 10px auto 40px; /* 상단 마진 줄여서 탭과 거리 조정 */
+    padding: 50px 40px; /* 여백 넉넉하게 */
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    overflow: visible; /* 오버플로우 허용 */
+}
+
+.step-container {
+    margin-bottom: 32px;
+}
+
+.step-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 16px;
+}
+
+.step-indicator-container {
+    display: flex;
+    flex-direction: row; /* 명시적으로 가로 배열 */
+    justify-content: center;
+    align-items: center;
+    width: 80%; /* 폭을 줄임 */
+    margin: 0 auto 36px;
+    position: relative;
+}
+
+/* 연결선을 먼저 그리기 */
+.step-indicator-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #e9ecef;
+    transform: translateY(-50%);
+    z-index: 0;
+}
+
+.step-circle {
+    position: relative;
+    width: 32px; /* 크기 증가 */
+    height: 32px;
+    border: 2px solid #e1e1e1;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #bdbdbd;
+    z-index: 1;
+    transition: all 0.3s;
+}
+
+.step-circle.completed {
+    border-color: #00c471;
+    background: #00c471;
+    color: #fff;
+}
+
+/* 체크표시 제거 */
+.step-circle.completed::after {
+    content: none;
+}
+
+/* 완료된 단계들 사이의 연결선 */
+.step-indicator-container::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: 2px;
+    background: #00c471;
+    transform: translateY(-50%);
+    z-index: 0;
+    width: calc((var(--step) - 1) * 33.3%); /* JavaScript로 --step 변수를 설정해야 함 */
+    transition: width 0.3s;
+}
+
+/* 원의 ::after 삭제하고 대신 배경 연결선 사용 */
+.step-circle::after {
+    content: none;
+}
+
+.auth-title {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    font-size: 15px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.form-group input {
+    padding: 15px 16px; /* 입력창 높이 증가 */
+    font-size: 16px;
+    background-color: #fafafa;
+    border: 1px solid #e5e5e5;
+    transition: all 0.2s ease-in-out;
+}
+
+.form-group input:focus {
+    border-color: #00c471;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(0,196,113,0.1);
+    outline: none;
+    transform: translateY(-1px);
+}
+
+.error-message {
+    color: #ff4d4f;
+    font-size: 13px;
+    margin-top: 6px;
+    text-align: left;
+}
+
+.password-conditions {
+    font-size: 11px;
+    color: #888;
+    margin-top: 4px;
+}
+
+.password-strength {
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.password-strength.위험 {
+    color: #ff4d4f;
+}
+
+.password-strength.경고 {
+    color: #ff9800;
+}
+
+.password-strength.안전 {
+    color: #00c471;
+}
+
+/* 비밀번호 강도 시각화 */
+.password-strength-wrapper {
+    margin-top: 12px;
+}
+
+.password-strength-text {
+    font-size: 13px;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.password-strength-bar {
+    height: 6px;
+    background: #e9ecef;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.password-strength-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.password-strength-fill.위험 {
+    width: 33%;
+    background: #ff4d4f;
+}
+
+.password-strength-fill.경고 {
+    width: 66%;
+    background: #ff9800;
+}
+
+.password-strength-fill.안전 {
+    width: 100%;
+    background: #00c471;
+}
+
+.form-container {
+    position: relative;
+    min-height: 260px; /* 높이 여유 확보 */
+    width: 100%; /* 너비 명시 */
+}
+
+.form-step {
+    position: absolute;
+    width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(15px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.form-step.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* 버튼 그룹 */
+.button-group {
+    margin-top: 24px;
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+}
+
+/* 반응형 디자인 - 작은 화면에서 여백 줄이기 */
+@media (max-width: 480px) {
+    .auth-container {
+        margin: 10px auto 20px;
+        padding: 32px 20px;
+    }
+    
+    .step-title {
+        font-size: 16px;
+    }
+    
+    .form-group input,
+    .auth-button {
+        padding: 12px;
+        font-size: 15px;
+    }
+}
