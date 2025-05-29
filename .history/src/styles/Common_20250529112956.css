@@ -141,7 +141,7 @@ body {
 .auth-container {
   max-width: 400px;
   width: 100%;
-  margin: 30px auto;
+  margin: 50px auto;
   padding: 24px;
   background: white;
   border-radius: 16px;
@@ -261,10 +261,8 @@ body {
     font-weight: 600;
     text-decoration: none;
     padding: 12px 24px;
-    border-radius: 7px;
+    border-radius: 8px;
     transition: all 0.2s;
-    white-space: nowrap; /* 줄바꿈 방지 */
-    min-width: 100px; /* 최소 너비 설정 */
 }
 
 .auth-link.active {

@@ -140,13 +140,11 @@ body {
 /* 인증 관련 스타일 */
 .auth-container {
   max-width: 400px;
-  width: 100%;
-  margin: 30px auto;
+  margin: 60px auto;
   padding: 24px;
   background: white;
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  box-sizing: border-box;
 }
 
 .auth-title {
@@ -158,8 +156,6 @@ body {
 
 .form-group {
   margin-bottom: 20px;
-  position: relative;
-  padding-bottom: 24px; /* 에러 메시지를 위한 공간 */
 }
 
 .form-group label {
@@ -177,8 +173,6 @@ body {
   border-radius: 8px;
   font-size: 16px;
   transition: all 0.2s;
-  box-sizing: border-box;
-  height: 48px; /* 입력 필드 높이 고정 */
 }
 
 .form-group input:focus {
@@ -190,10 +184,7 @@ body {
 .error-message {
   color: var(--error-color);
   font-size: 14px;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
+  margin-top: 8px;
 }
 
 .auth-button {
@@ -261,10 +252,8 @@ body {
     font-weight: 600;
     text-decoration: none;
     padding: 12px 24px;
-    border-radius: 7px;
+    border-radius: 8px;
     transition: all 0.2s;
-    white-space: nowrap; /* 줄바꿈 방지 */
-    min-width: 100px; /* 최소 너비 설정 */
 }
 
 .auth-link.active {
@@ -283,21 +272,6 @@ body {
   100% { transform: scale(1); opacity: 1; }
 }
 
-@keyframes failureAnimation {
-  0% { 
-    transform: translate(-50%, -50%) scale(0.8);
-    opacity: 0;
-  }
-  50% { 
-    transform: translate(-50%, -50%) scale(1.2);
-    opacity: 1;
-  }
-  100% { 
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
-  }
-}
-
 .login-result {
   position: fixed;
   top: 50%;
@@ -306,6 +280,7 @@ body {
   padding: 20px 40px;
   border-radius: 8px;
   font-size: 18px;
+  animation: successAnimation 0.5s ease-out forwards;
   z-index: 1000;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
@@ -313,13 +288,19 @@ body {
 .login-success {
   background-color: var(--success-color);
   color: white;
-  animation: successAnimation 0.5s ease-out forwards;
+}
+
+@keyframes failureAnimation {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+  100% { transform: translateX(0); }
 }
 
 .login-failure {
   background-color: var(--error-color);
   color: white;
-  animation: failureAnimation 0.5s ease-out forwards;
+  animation: failureAnimation 0.5s ease-in-out;
 }
 
 /* 아래 스타일들은 RegisterForm.css로 옮겨 중복 방지 */

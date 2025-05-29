@@ -110,6 +110,8 @@ const LoginForm = ({ onLoginSuccess, onLoginFailure }) => {
             disabled={isLoading}
           />
         </div>
+
+        {error && <div className="error-message">{error}</div>}
         
         <label className="auto-login">
           <input

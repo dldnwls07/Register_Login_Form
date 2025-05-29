@@ -321,7 +321,7 @@ body {
 
 .auth-container .form-group {
   position: relative;
-  min-height: 10px;
+  min-height: 90px; /* 에러 메시지를 위한 공간 확보 */
 }
 
 .auth-container input {

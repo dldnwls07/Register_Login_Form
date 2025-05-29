@@ -1,7 +1,6 @@
 // server/config/db.js
 const { Sequelize } = require('sequelize');
-const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '../../.env') });
+require('dotenv').config({ path: '../../.env' }); // dotenv 설정 추가
 
 // 환경 변수 로그 찍어보기 (디버깅용)
 console.log('DB_USER:', process.env.DB_USER);
@@ -16,7 +15,7 @@ const sequelize = new Sequelize(
   {
     host: 'localhost',
     dialect: 'mysql',
-    port: 3306,
+    port: process.env.DB_PORT || 3306,
     logging: process.env.NODE_ENV === 'development' ? console.log : false,
     pool: {
       max: 5,

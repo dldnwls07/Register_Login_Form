@@ -17,11 +17,7 @@ const LoginPage = () => {
     };
 
     const handleLoginFailure = (error) => {
-        setLoginStatus({ 
-            show: true, 
-            success: false, 
-            message: error || '아이디와 비밀번호를 다시 한번 확인해 주세요'
-        });
+        setLoginStatus({ show: true, success: false, message: error || '로그인 실패' });
         setTimeout(() => {
             setLoginStatus({ show: false, success: false, message: '' });
         }, 1500);

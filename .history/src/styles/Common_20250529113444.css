@@ -263,8 +263,6 @@ body {
     padding: 12px 24px;
     border-radius: 7px;
     transition: all 0.2s;
-    white-space: nowrap; /* 줄바꿈 방지 */
-    min-width: 100px; /* 최소 너비 설정 */
 }
 
 .auth-link.active {

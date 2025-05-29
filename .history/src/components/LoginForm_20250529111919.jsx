@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import '../styles/RegisterForm.css';
 
-const LoginForm = ({ onLoginSuccess, onLoginFailure }) => {
+const LoginForm = ({ onLoginSuccess }) => {
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -65,19 +65,18 @@ const LoginForm = ({ onLoginSuccess, onLoginFailure }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.username || !formData.password) {
-        onLoginFailure('아이디와 비밀번호를 다시 한번 확인해 주세요');
+        setError('아이디와 비밀번호를 입력해주세요.');
         return;
     }
     try {
+        // 데이터 구조 직접 전달
         const response = await login(formData.username, formData.password, autoLogin);
         if (response.success) {
-            onLoginSuccess();
-        } else {
-            onLoginFailure('아이디와 비밀번호를 다시 한번 확인해 주세요');
+            onLoginSuccess(); // 성공 애니메이션 트리거
         }
     } catch (err) {
         console.error('로그인 오류:', err);
-        onLoginFailure('아이디와 비밀번호를 다시 한번 확인해 주세요');
+        setError('로그인에 실패했습니다.');
     }
   };
 
@@ -110,6 +109,8 @@ const LoginForm = ({ onLoginSuccess, onLoginFailure }) => {
             disabled={isLoading}
           />
         </div>
+
+        {error && <div className="error-message">{error}</div>}
         
         <label className="auto-login">
           <input

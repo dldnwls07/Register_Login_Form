@@ -65,7 +65,9 @@ const LoginForm = ({ onLoginSuccess, onLoginFailure }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.username || !formData.password) {
-        onLoginFailure('아이디와 비밀번호를 다시 한번 확인해 주세요');
+        const errorMessage = '아이디와 비밀번호를 입력해주세요.';
+        setError(errorMessage);
+        onLoginFailure(errorMessage);
         return;
     }
     try {
@@ -73,11 +75,15 @@ const LoginForm = ({ onLoginSuccess, onLoginFailure }) => {
         if (response.success) {
             onLoginSuccess();
         } else {
-            onLoginFailure('아이디와 비밀번호를 다시 한번 확인해 주세요');
+            const errorMessage = '아이디와 비밀번호를 다시 한번 확인해 주세요';
+            setError(errorMessage);
+            onLoginFailure(errorMessage);
         }
     } catch (err) {
         console.error('로그인 오류:', err);
-        onLoginFailure('아이디와 비밀번호를 다시 한번 확인해 주세요');
+        const errorMessage = '아이디와 비밀번호를 다시 한번 확인해 주세요';
+        setError(errorMessage);
+        onLoginFailure(errorMessage);
     }
   };
 
@@ -110,6 +116,8 @@ const LoginForm = ({ onLoginSuccess, onLoginFailure }) => {
             disabled={isLoading}
           />
         </div>
+
+        {error && <div className="error-message">{error}</div>}
         
         <label className="auto-login">
           <input

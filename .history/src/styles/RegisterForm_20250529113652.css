@@ -321,7 +321,6 @@ body {
 
 .auth-container .form-group {
   position: relative;
-  min-height: 10px;
 }
 
 .auth-container input {
